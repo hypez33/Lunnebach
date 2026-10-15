@@ -4,13 +4,13 @@ import { MapEmbed } from "@/components/ui/MapEmbed";
 import { home } from "@/content/pages";
 import { site } from "@/content/site";
 
-export function InquiryCta({ number = "09", showMap = true }: { number?: string; showMap?: boolean }) {
+export function InquiryCta({ number = "09", showMap = true }: { number?: string | null; showMap?: boolean }) {
   const q = home.inquiry;
   return (
     <section aria-labelledby="inquiry-title" className="section-y border-t border-line bg-paper-2">
       <div className="container-site grid-12 gap-y-14">
         <div className="col-span-4 md:col-span-8 lg:col-span-5">
-          <Eyebrow number={number} className="text-ink-muted">
+          <Eyebrow number={number ?? undefined} className="text-ink-muted">
             Anfrage &amp; Anfahrt
           </Eyebrow>
           <h2 id="inquiry-title" data-split className="mt-6 text-h2">

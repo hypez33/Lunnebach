@@ -41,6 +41,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="de"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${fraunces.variable} ${instrumentSans.variable} ${plexMono.variable}`}
     >

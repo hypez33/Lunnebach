@@ -16,6 +16,8 @@ type Props = {
   scrollDimension?: boolean;
   headingLevel?: "h2" | "h3";
   preload?: boolean;
+  /** clip-path-Reveal beim Scrollen (aus bei gefilterten Rastern) */
+  reveal?: boolean;
 };
 
 /**
@@ -31,6 +33,7 @@ export function ProjectCard({
   scrollDimension = false,
   headingLevel: H = "h3",
   preload,
+  reveal = true,
 }: Props) {
   const image = img(project.heroImage);
   const vertical = project.dimension.orientation === "vertical";
@@ -42,7 +45,7 @@ export function ProjectCard({
             <Dimension label={project.dimension.label} orientation={project.dimension.orientation} side="start" />
           </div>
         )}
-        <div data-clip="up" className="relative overflow-hidden bg-paper-2">
+        <div data-clip={reveal ? "up" : undefined} className="relative overflow-hidden bg-paper-2">
           <ViewTransition name={`project-${project.slug}`} share="morph" default="none">
             <div className="grain relative" style={{ aspectRatio: aspect ?? `${image.width} / ${image.height}` }}>
               <Image

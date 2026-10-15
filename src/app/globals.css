@@ -751,3 +751,10 @@ html[data-menu-open] .site-header {
 .process--horizontal .process-ruler {
   padding-bottom: clamp(1.5rem, 4vh, 3rem);
 }
+
+@layer components {
+  .next-project:hover .card-title,
+  .next-project:focus-visible .card-title {
+    background-size: 100% 2px;
+  }
+}
