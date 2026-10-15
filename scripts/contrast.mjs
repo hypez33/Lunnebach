@@ -34,6 +34,7 @@ while (ratio(mix(T.accent, "#3A1A08", t), T.paper2) < 4.6 && t < 1) t += 0.01;
 T.accentText = mix(T.accent, "#3A1A08", t);
 // gedämpfter Text auf dunklem Grund
 T.paperMuted = "#B9B0A4";
+T.error = "#A3261C";
 
 const rows = [
   ["ink auf paper", T.ink, T.paper, 4.5],
@@ -43,13 +44,18 @@ const rows = [
   ["accent-text auf paper", T.accentText, T.paper, 4.5],
   ["accent-text auf paper-2", T.accentText, T.paper2, 4.5],
   ["ink auf accent (Primär-Button)", T.ink, T.accent, 4.5],
-  ["accent auf paper (Fokus/UI, Linien)", T.accent, T.paper, 3],
-  ["accent auf ink (Fokus/UI, Text dunkel)", T.accent, T.ink, 4.5],
+  // 2,93:1 → reicht nicht für Fokus/Text; daher nur dekorativ (Anriss, Maßketten, Flächen)
+  ["accent auf paper – nur dekorativ (Anriss, Maßketten)", T.accent, T.paper, 1],
+  ["Fokusrahmen hell: accent-text auf paper", T.accentText, T.paper, 3],
+  ["Fokusrahmen/Links dunkel: accent auf ink", T.accent, T.ink, 4.5],
   ["paper auf ink", T.paper, T.ink, 4.5],
   ["paper-muted auf ink", T.paperMuted, T.ink, 4.5],
   ["walnut auf paper (nur Fläche)", T.walnut, T.paper, 3],
   ["line (14 % ink) auf paper – dekorativ", over(T.ink, 0.14, T.paper), T.paper, 1],
   ["Formular-Rahmen (ink-muted) auf paper", T.inkMuted, T.paper, 3],
+  ["error auf paper (Fehlermeldungen)", T.error, T.paper, 4.5],
+  ["error auf paper-2 (Fehlermeldungen)", T.error, T.paper2, 4.5],
+  ["Fokusrahmen accent-text auf paper-2", T.accentText, T.paper2, 3],
 ];
 console.log(`Tokens: ${JSON.stringify(T)}\n`);
 console.log("| Kombination | Vordergrund | Hintergrund | Kontrast | Ziel | OK |\n|---|---|---|---|---|---|");
