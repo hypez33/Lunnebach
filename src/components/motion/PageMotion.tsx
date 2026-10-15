@@ -23,12 +23,16 @@ const nf = (decimals: number) =>
  *  - [data-dimension]    Maßkette zeichnet sich (DrawSVG)
  *  - [data-count]        Zahl zählt einmalig hoch
  * Ohne JS bzw. bei reduzierter Bewegung bleibt alles statisch sichtbar.
+ *
+ * Wichtig: als LETZTES Element jeder Seite rendern (nicht im Layout). Mit Cache Components
+ * hydriert das Seitensegment getrennt vom Layout; liefe der Code im Layout, würde er das DOM
+ * vor der Hydration der Seite verändern (Hydration-Mismatch).
  */
 export function PageMotion() {
   const pathname = usePathname();
 
   useMotion(
-    ({ reduce }) => {
+    ({ reduce, isDesktop }) => {
       if (reduce) return;
       const root = document.getElementById("main");
       if (!root) return;
@@ -36,6 +40,8 @@ export function PageMotion() {
       // Moment 5 – Sektionsheadlines
       root.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
         const immediate = el.dataset.split === "hero";
+        // Seiten-H1 („hero“) nur auf Desktop animieren – mobil sofort sichtbar (LCP)
+        if (immediate && !isDesktop) return;
         if (!immediate && isInitiallyVisible(el)) return;
         let played = false;
         SplitText.create(el, {

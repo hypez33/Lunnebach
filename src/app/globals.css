@@ -28,7 +28,7 @@
   --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
 
   /* Fluide Typo-Skala */
-  --text-display: clamp(2.75rem, 1.25rem + 6.4vw, 7.5rem);
+  --text-display: clamp(2.75rem, 1.5rem + 5.6vw, 7.25rem);
   --text-display--line-height: 1;
   --text-h1: clamp(2.75rem, 1.6rem + 4.6vw, 6rem);
   --text-h1--line-height: 1.02;
@@ -271,6 +271,7 @@
   }
 }
 
+@layer components {
 .btn {
   --btn-bg: transparent;
   --btn-fg: currentColor;
@@ -368,12 +369,13 @@ textarea.field-input {
   min-height: 9rem;
   resize: vertical;
 }
+}
 
 /* ------------------------------------------------------------------
    Motion – Anfangszustände nur mit JS und ohne reduzierte Bewegung.
    Failsafe: .motion-failsafe (gesetzt nach 3 s ohne Motion-Init) zeigt alles.
    ------------------------------------------------------------------ */
-@media (prefers-reduced-motion: no-preference) {
+@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
   .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-hidden] {
     visibility: hidden;
   }
@@ -434,6 +436,7 @@ textarea.field-input {
 /* ------------------------------------------------------------------
    Header & Logo
    ------------------------------------------------------------------ */
+@layer components {
 .site-header {
   background: rgb(244 241 236 / 0.94);
   color: var(--color-ink);
@@ -466,4 +469,285 @@ textarea.field-input {
 }
 html[data-menu-open] .site-header {
   transform: none;
+}
+}
+
+/* ------------------------------------------------------------------
+   Maßkette <Dimension>
+   ------------------------------------------------------------------ */
+@layer components {
+.dim {
+  --dim-color: var(--color-accent);
+  position: relative;
+  color: var(--dim-color);
+  pointer-events: none;
+  user-select: none;
+}
+.dim svg {
+  overflow: visible;
+  fill: none;
+  stroke: currentColor;
+}
+.dim .dim-path {
+  stroke-width: 1.25;
+}
+.dim .dim-tick path {
+  stroke-width: 1.25;
+}
+.dim-tick {
+  position: absolute;
+  width: 14px;
+  height: 14px;
+}
+.dim-label {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  color: var(--color-ink);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+[data-theme="dark"] .dim-label,
+.dim.on-dark .dim-label,
+.dim.on-image .dim-label {
+  color: var(--color-paper);
+}
+.dim.on-image .dim-label {
+  background: var(--color-ink);
+  padding: 0.3em 0.45em;
+}
+/* horizontal */
+.dim-h {
+  height: 14px;
+  width: 100%;
+}
+.dim-h .dim-line {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 14px;
+}
+.dim-h .dim-tick-start {
+  left: -7px;
+  top: 0;
+}
+.dim-h .dim-tick-end {
+  right: -7px;
+  top: 0;
+}
+.dim-h .dim-label {
+  left: 50%;
+  bottom: calc(100% + 4px);
+  transform: translateX(-50%);
+}
+.dim-h[data-side="end"] .dim-label {
+  bottom: auto;
+  top: calc(100% + 4px);
+}
+/* vertikal */
+.dim-v {
+  width: 14px;
+  height: 100%;
+}
+.dim-v .dim-line {
+  position: absolute;
+  inset: 0;
+  width: 14px;
+  height: 100%;
+}
+.dim-v .dim-tick-start {
+  top: -7px;
+  left: 0;
+}
+.dim-v .dim-tick-end {
+  bottom: -7px;
+  left: 0;
+}
+.dim-v .dim-label {
+  top: 50%;
+  right: calc(100% + 4px);
+  transform: translateY(-50%) rotate(180deg);
+  writing-mode: vertical-rl;
+}
+.dim-v[data-side="end"] .dim-label {
+  right: auto;
+  left: calc(100% + 4px);
+}
+.dim-v .dim-tick {
+  transform: rotate(90deg);
+}
+}
+
+/* ------------------------------------------------------------------
+   Zwei Welten
+   ------------------------------------------------------------------ */
+@layer components {
+.world {
+  flex: 1 1 0%;
+  transition: flex-grow 0.9s var(--ease-lunnebach);
+}
+.world-media {
+  clip-path: inset(4% 4% 0 4%);
+  transition: clip-path 0.9s var(--ease-lunnebach);
+}
+.world-media img {
+  transition: transform 1.2s var(--ease-expo-out);
+}
+.world:hover .world-media,
+.world:focus-within .world-media {
+  clip-path: inset(0 0 0 0);
+}
+.world:hover .world-media img,
+.world:focus-within .world-media img {
+  transform: scale(1.03);
+}
+@media (min-width: 1024px) {
+  .worlds:hover .world:not(:hover),
+  .worlds:focus-within .world:not(:focus-within) {
+    flex-grow: 0.72;
+  }
+  .world:hover,
+  .world:focus-within {
+    flex-grow: 1.35;
+  }
+}
+.world-cta {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.55s var(--ease-lunnebach);
+}
+.world:hover .world-cta,
+.world:focus-within .world-cta {
+  background-size: 100% 1.5px;
+}
+/* Fokus der gestreckten Link-Fläche sichtbar machen */
+.world-link:focus-visible::after {
+  outline: 3px solid var(--focus-color);
+  outline-offset: -3px;
+}
+}
+
+/* ------------------------------------------------------------------
+   Projektkarte
+   ------------------------------------------------------------------ */
+@layer components {
+.card-dim {
+  opacity: 0;
+  clip-path: inset(0 100% 0 0);
+  transition:
+    opacity 0.3s var(--ease-lunnebach),
+    clip-path 0.7s var(--ease-lunnebach);
+}
+.project-card:hover .card-dim,
+.project-card:focus-within .card-dim {
+  opacity: 1;
+  clip-path: inset(-2rem -1rem -2rem -1rem);
+}
+.card-title {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1.5px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 0.6s var(--ease-lunnebach);
+}
+.project-card:hover .card-title,
+.project-card:focus-within .card-title {
+  background-size: 100% 1.5px;
+}
+.card-title-link:focus-visible::after {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 4px;
+}
+}
+
+/* ------------------------------------------------------------------
+   Prozess (Moment 3)
+   ------------------------------------------------------------------ */
+.process-head {
+  padding-top: var(--spacing-section);
+}
+.process-track {
+  display: grid;
+  gap: clamp(4rem, 8vw, 7rem);
+  padding-top: clamp(3.5rem, 6vw, 6rem);
+  padding-bottom: clamp(3rem, 5vw, 5rem);
+}
+.process-step {
+  --c: 1;
+  display: grid;
+  gap: 2rem;
+  border-top: 1px solid var(--color-line);
+  padding-top: 2rem;
+}
+@media (min-width: 768px) {
+  .process-step {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: end;
+  }
+}
+.process-ruler {
+  padding-bottom: var(--spacing-section);
+}
+.process-img {
+  filter: grayscale(calc(1 - var(--c))) contrast(calc(1.25 - 0.25 * var(--c))) brightness(calc(1.08 - 0.08 * var(--c)));
+}
+.process-sketch {
+  opacity: calc((1 - var(--c)) * 0.85);
+  mix-blend-mode: multiply;
+  background-color: rgb(244 241 236 / 0.55);
+  background-image:
+    linear-gradient(to right, rgb(28 25 22 / 0.22) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(28 25 22 / 0.22) 1px, transparent 1px),
+    repeating-linear-gradient(135deg, rgb(28 25 22 / 0.12) 0 1px, transparent 1px 7px);
+  background-size: 48px 48px, 48px 48px, auto;
+}
+
+/* Horizontal-Modus (nur Desktop + volle Bewegung, per JS gesetzt) */
+.process--horizontal .process-pin {
+  height: 100vh;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.process--horizontal .process-head {
+  padding-top: calc(var(--header-h) + clamp(1.5rem, 4vh, 3rem));
+}
+.process--horizontal .process-viewport {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  align-items: center;
+}
+.process--horizontal .process-track {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: clamp(3rem, 6vw, 7rem);
+  max-width: none;
+  margin: 0;
+  width: max-content;
+  padding-top: 0;
+  padding-bottom: 0;
+  will-change: transform;
+}
+.process--horizontal .process-step {
+  width: min(78vw, 1120px);
+  flex: none;
+  border-top: 0;
+  padding-top: 0;
+  grid-template-columns: minmax(0, 4fr) minmax(0, 6fr);
+  gap: clamp(2rem, 4vw, 4rem);
+}
+.process--horizontal .process-media {
+  max-height: 58vh;
+}
+.process--horizontal .process-media > div {
+  max-height: 58vh;
+}
+.process--horizontal .process-ruler {
+  padding-bottom: clamp(1.5rem, 4vh, 3rem);
 }

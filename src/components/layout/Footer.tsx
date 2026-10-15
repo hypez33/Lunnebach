@@ -14,7 +14,7 @@ export function Footer() {
           <div className="col-span-4 md:col-span-8 lg:col-span-5">
             <p className="eyebrow text-paper-muted">Lunnebach · Koblenz</p>
             <p className="mt-6 font-display text-[clamp(2.25rem,1.4rem+3vw,4rem)] leading-[1.02] tracking-[-0.02em]">
-              Die <span className="text-accent">C</span>reative
+              Die <span className="text-accent">c</span>reative
               <br />
               Holzwerkstätte.
             </p>

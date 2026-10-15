@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import { Footer } from "@/components/layout/Footer";
 import { Header } from "@/components/layout/Header";
 import { SkipLink } from "@/components/layout/SkipLink";
-import { PageMotion } from "@/components/motion/PageMotion";
 import { site } from "@/content/site";
 import { businessJsonLd, jsonLdString } from "@/lib/jsonld";
 import { MOTION_STORAGE_KEY } from "@/lib/motion/constants";
@@ -55,7 +54,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {children}
         </main>
         <Footer />
-        <PageMotion />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString(businessJsonLd()) }}
