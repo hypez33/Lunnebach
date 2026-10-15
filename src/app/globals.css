@@ -1,0 +1,469 @@
+@import "tailwindcss";
+
+/* ------------------------------------------------------------------
+   Design-Tokens „Auf den Millimeter“
+   Kontraste: siehe DECISIONS.md (node scripts/contrast.mjs)
+   ------------------------------------------------------------------ */
+@theme {
+  /* Farben */
+  --color-paper: #f4f1ec;
+  --color-paper-2: #eae5dd;
+  --color-ink: #1c1916;
+  --color-ink-2: #262220;
+  --color-ink-muted: #5c554d;
+  --color-paper-muted: #b9b0a4;
+  --color-accent: #e46929; /* per sharp aus logo-weiss-orange.png ermittelt */
+  --color-accent-text: #a34b1c; /* ≥ 4,5:1 auf paper und paper-2 */
+  --color-walnut: #8a6a4a; /* nur Flächen/Details, nie Text */
+  --color-line: rgb(28 25 22 / 0.14);
+  --color-line-strong: rgb(28 25 22 / 0.28);
+  --color-line-dark: rgb(244 241 236 / 0.16);
+  --color-success: #2f6b3a;
+  --color-error: #a3261c;
+  --color-error-dark: #ff9d8f;
+
+  /* Schriften (Variablen kommen aus next/font) */
+  --font-display: var(--font-fraunces), "Iowan Old Style", Georgia, serif;
+  --font-sans: var(--font-instrument), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SFMono-Regular", monospace;
+
+  /* Fluide Typo-Skala */
+  --text-display: clamp(2.75rem, 1.25rem + 6.4vw, 7.5rem);
+  --text-display--line-height: 1;
+  --text-h1: clamp(2.75rem, 1.6rem + 4.6vw, 6rem);
+  --text-h1--line-height: 1.02;
+  --text-h2: clamp(2rem, 1.25rem + 3vw, 4.25rem);
+  --text-h2--line-height: 1.05;
+  --text-h3: clamp(1.375rem, 1.1rem + 1vw, 2rem);
+  --text-h3--line-height: 1.15;
+  --text-statement: clamp(1.875rem, 0.9rem + 3.9vw, 5rem);
+  --text-statement--line-height: 1.06;
+  --text-lead: clamp(1.1875rem, 1.05rem + 0.45vw, 1.4375rem);
+  --text-lead--line-height: 1.5;
+  --text-body: 1.0625rem;
+  --text-body--line-height: 1.6;
+  --text-eyebrow: 0.78125rem;
+  --text-eyebrow--line-height: 1.4;
+
+  /* Abstände & Raster */
+  --spacing-gutter: clamp(1.5rem, 5vw, 6rem);
+  --spacing-section: clamp(5rem, 3rem + 8vw, 11rem);
+  --container-content: 68ch;
+  --container-site: 1680px;
+  --radius-btn: 2px;
+
+  /* Eases als CSS-Pendant zu src/lib/motion/eases.ts */
+  --ease-lunnebach: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------
+   Basis
+   ------------------------------------------------------------------ */
+@layer base {
+  :root {
+    --header-h: 4.5rem;
+    --focus-color: var(--color-accent-text);
+    color-scheme: light;
+  }
+
+  html {
+    scroll-padding-top: calc(var(--header-h) + 1rem);
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    html:not([data-motion="reduced"]) {
+      scroll-behavior: smooth;
+    }
+  }
+
+  body {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: 1.6;
+    font-feature-settings: "ss01", "kern";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: clip;
+  }
+
+  @media (min-width: 1440px) {
+    body {
+      font-size: 1.125rem;
+    }
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 380;
+    letter-spacing: -0.02em;
+    font-variation-settings: "SOFT" 50, "WONK" 0;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: var(--color-accent);
+    color: var(--color-ink);
+  }
+
+  /* Fokus: 2–3 px, mit Abstand, auf hellem wie dunklem Grund sichtbar */
+  :focus-visible {
+    outline: 3px solid var(--focus-color);
+    outline-offset: 3px;
+    border-radius: 1px;
+  }
+  [data-theme="dark"] {
+    --focus-color: var(--color-accent);
+  }
+
+  a {
+    color: inherit;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Dunkle Sektionen
+   ------------------------------------------------------------------ */
+@utility theme-dark {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  --focus-color: var(--color-accent);
+  color-scheme: dark;
+}
+
+/* ------------------------------------------------------------------
+   Layout-Helfer
+   ------------------------------------------------------------------ */
+@utility container-site {
+  width: 100%;
+  max-width: var(--container-site);
+  margin-inline: auto;
+  padding-inline: var(--spacing-gutter);
+}
+
+@utility grid-12 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  column-gap: clamp(1rem, 2vw, 2rem);
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+  }
+}
+
+@utility section-y {
+  padding-block: var(--spacing-section);
+}
+
+@utility eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-eyebrow);
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+@utility mono {
+  font-family: var(--font-mono);
+  font-feature-settings: "zero" 0;
+}
+
+@utility prose-measure {
+  max-width: var(--container-content);
+}
+
+/* Werkzeichnungs-Raster im Hintergrund (1px line) */
+@utility drafting-grid {
+  background-image:
+    linear-gradient(to right, var(--color-line) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--color-line) 1px, transparent 1px);
+  background-size: calc((100% - 2 * var(--spacing-gutter)) / 12) 96px;
+  background-position: var(--spacing-gutter) 0;
+}
+
+/* Feine Körnung über großen Bildern (SVG-Noise, ~4 %) */
+@utility grain {
+  position: relative;
+  isolation: isolate;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.045;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1.6 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+}
+
+/* Holzton-Platzhalterfläche mit Maserung */
+@utility wood-fill {
+  background-color: #a88762;
+  background-image: repeating-radial-gradient(
+    ellipse 180% 40% at 30% 120%,
+    rgb(111 83 56 / 0.18) 0 2px,
+    transparent 2px 14px
+  );
+}
+
+@utility sr-only-focusable {
+  &:not(:focus):not(:focus-within) {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Links & Buttons – „Anriss“-Linie unter dem Label
+   ------------------------------------------------------------------ */
+@utility link-line {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  text-decoration: none;
+  transition: background-size 0.5s var(--ease-lunnebach);
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+@utility text-link {
+  color: var(--color-accent-text);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+  [data-theme="dark"] & {
+    color: var(--color-accent);
+  }
+}
+
+.btn {
+  --btn-bg: transparent;
+  --btn-fg: currentColor;
+  --btn-border: currentColor;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.375rem;
+  border: 1.5px solid var(--btn-border);
+  border-radius: var(--radius-btn);
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  font-weight: 560;
+  line-height: 1.2;
+  letter-spacing: 0.005em;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color 0.3s var(--ease-lunnebach),
+    color 0.3s var(--ease-lunnebach);
+}
+.btn-label {
+  position: relative;
+  padding-block: 0.15em;
+}
+.btn-label::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.05em;
+  height: 1.5px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.55s var(--ease-lunnebach);
+}
+.btn:hover .btn-label::after,
+.btn:focus-visible .btn-label::after {
+  transform: scaleX(1);
+}
+.btn-primary {
+  --btn-bg: var(--color-accent);
+  --btn-fg: var(--color-ink);
+  --btn-border: var(--color-accent);
+}
+.btn-secondary {
+  --btn-border: var(--color-ink);
+  --btn-fg: var(--color-ink);
+}
+[data-theme="dark"] .btn-secondary,
+.btn-secondary.on-dark {
+  --btn-border: var(--color-paper);
+  --btn-fg: var(--color-paper);
+}
+.btn-ghost {
+  --btn-border: transparent;
+  padding-inline: 0;
+}
+.btn-arrow {
+  transition: transform 0.45s var(--ease-lunnebach);
+}
+.btn:hover .btn-arrow,
+.btn:focus-visible .btn-arrow {
+  transform: translateX(0.25rem);
+}
+
+/* ------------------------------------------------------------------
+   Formulare
+   ------------------------------------------------------------------ */
+.field-input {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.75rem 0.875rem;
+  background: var(--color-paper);
+  border: 1.5px solid var(--color-ink-muted);
+  border-radius: var(--radius-btn);
+  color: var(--color-ink);
+  font: inherit;
+}
+.field-input:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
+}
+.field-input[aria-invalid="true"] {
+  border-color: var(--color-error);
+  border-width: 2px;
+}
+textarea.field-input {
+  min-height: 9rem;
+  resize: vertical;
+}
+
+/* ------------------------------------------------------------------
+   Motion – Anfangszustände nur mit JS und ohne reduzierte Bewegung.
+   Failsafe: .motion-failsafe (gesetzt nach 3 s ohne Motion-Init) zeigt alles.
+   ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: no-preference) {
+  .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-hidden] {
+    visibility: hidden;
+  }
+  .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-door] {
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+/* Reduzierte Bewegung: CSS-Übergänge abschalten */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+[data-motion="reduced"] *,
+[data-motion="reduced"] *::before,
+[data-motion="reduced"] *::after {
+  animation-duration: 0.01ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.01ms !important;
+}
+
+/* ------------------------------------------------------------------
+   View Transitions (Projektkarte → Detail-Hero)
+   ------------------------------------------------------------------ */
+::view-transition-group(.morph) {
+  animation-duration: 600ms;
+  animation-timing-function: cubic-bezier(0.65, 0, 0.35, 1);
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 260ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+[data-motion="reduced"]::view-transition-group(*),
+[data-motion="reduced"]::view-transition-old(*),
+[data-motion="reduced"]::view-transition-new(*) {
+  animation: none !important;
+}
+
+/* SplitText-Zeilen-Masken sollen keine Unterlängen abschneiden */
+.split-line-mask {
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+
+/* ------------------------------------------------------------------
+   Header & Logo
+   ------------------------------------------------------------------ */
+.site-header {
+  background: rgb(244 241 236 / 0.94);
+  color: var(--color-ink);
+  border-bottom: 1px solid transparent;
+  -webkit-backdrop-filter: saturate(1.2);
+}
+.site-header[data-scrolled] {
+  border-bottom-color: var(--color-line);
+}
+.site-header[data-theme="dark"] {
+  background: rgb(28 25 22 / 0.96);
+  color: var(--color-paper);
+  border-bottom-color: var(--color-line-dark);
+}
+.site-header .btn-primary {
+  --btn-fg: var(--color-ink);
+}
+.logo .logo-on-light,
+.logo .logo-on-dark {
+  transition: opacity 0.4s var(--ease-lunnebach);
+}
+.logo .logo-on-dark,
+[data-theme="dark"] .logo[data-tone="auto"] .logo-on-light,
+.logo[data-tone="light"] .logo-on-light {
+  opacity: 0;
+}
+[data-theme="dark"] .logo[data-tone="auto"] .logo-on-dark,
+.logo[data-tone="light"] .logo-on-dark {
+  opacity: 1;
+}
+html[data-menu-open] .site-header {
+  transform: none;
+}
