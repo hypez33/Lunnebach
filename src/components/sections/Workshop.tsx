@@ -56,7 +56,7 @@ export function Workshop() {
             <p className="mt-8 max-w-[44ch] text-lead">{w.text}</p>
           </div>
           <div className="col-span-4 md:col-span-4 lg:col-span-6 lg:col-start-7 lg:mt-32">
-            <p className="eyebrow mb-4 text-paper-muted">Film · Ein Tag in der Werkstatt</p>
+            <p className="eyebrow mb-4 text-paper-muted">Film · Einblick in die Werkstatt</p>
             <VideoEmbed id={site.youtubeId} title="Lunnebach – Einblick in die Werkstatt (YouTube)" poster={poster} />
           </div>
         </div>

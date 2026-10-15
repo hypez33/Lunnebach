@@ -39,7 +39,7 @@ export function ProjectCard({
   const vertical = project.dimension.orientation === "vertical";
   return (
     <article className={`project-card group relative ${className}`}>
-      <div className={`relative ${vertical ? "pr-8" : "pt-8"}`}>
+      <div className={`relative ${scrollDimension ? (vertical ? "pr-8" : "pt-8") : ""}`}>
         {scrollDimension && (
           <div className={vertical ? "absolute bottom-0 right-0 top-0" : "absolute inset-x-0 top-0"}>
             <Dimension label={project.dimension.label} orientation={project.dimension.orientation} side="start" />

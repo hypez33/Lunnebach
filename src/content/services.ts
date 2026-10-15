@@ -89,7 +89,7 @@ export const services: Service[] = [
     short: "Praxis",
     text: "Empfang als freundliches Gesicht, Wartezimmer mit Ruhe, Behandlungsräume, die funktionieren. Ihre Patienten fühlen sich wohl, Ihr Team arbeitet gern.",
     bullets: ["Empfangstheken", "Wartebereiche", "Behandlungs- und Apothekenmöbel"],
-    images: ["gewerbe/acc-prax", "hero/objekteinrichtung", "gewerbe/ladenbau/wanddisplay"],
+    images: ["hero/objekteinrichtung", "gewerbe/acc-prax", "gewerbe/ladenbau/counter"],
     dimension: "3 200",
   },
   {

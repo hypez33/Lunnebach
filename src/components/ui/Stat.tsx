@@ -7,16 +7,18 @@ export function Stat({
   prefix = "",
   suffix = "",
   decimals = 0,
+  tone = "dark",
 }: {
   value: number;
   label: string;
   prefix?: string;
   suffix?: string;
   decimals?: number;
+  tone?: "dark" | "light";
 }) {
   const formatted = `${prefix}${nf(decimals).format(value)}`;
   return (
-    <div className="border-t border-line-dark pt-5">
+    <div className={`border-t pt-5 ${tone === "dark" ? "border-line-dark" : "border-line"}`}>
       <p className="font-display text-[clamp(3rem,2rem+3vw,5.5rem)] leading-none tracking-[-0.03em] [font-variation-settings:'opsz'_144]">
         <span aria-hidden data-count={value} data-decimals={decimals} data-prefix={prefix}>
           {formatted}
@@ -29,7 +31,7 @@ export function Stat({
           {suffix}
         </span>
       </p>
-      <p className="eyebrow mt-3 text-paper-muted">{label}</p>
+      <p className={`eyebrow mt-3 ${tone === "dark" ? "text-paper-muted" : "text-ink-muted"}`}>{label}</p>
     </div>
   );
 }
