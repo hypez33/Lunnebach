@@ -1,4 +1,4 @@
-import { ApplicationForm } from "@/components/forms/ApplicationForm";
+import { LazyApplicationForm } from "@/components/forms/LazyApplicationForm";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { site } from "@/content/site";
 
@@ -24,7 +24,7 @@ export function ApplicationSection() {
           </p>
         </div>
         <div className="col-span-4 md:col-span-8 lg:col-span-7 lg:col-start-6">
-          <ApplicationForm />
+          <LazyApplicationForm />
         </div>
       </div>
     </section>

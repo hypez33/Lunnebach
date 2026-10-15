@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, SplitText } from "@/lib/motion/gsap";
 import { DURATION, EASE, STAGGER } from "@/lib/motion/eases";
 import { useMotion } from "@/lib/motion/useMotion";
 
@@ -19,7 +18,7 @@ export function HeroMotion({ children, className = "" }: { children: React.React
   const scope = useRef<HTMLDivElement>(null);
 
   useMotion(
-    ({ reduce, isDesktop }) => {
+    ({ reduce, isDesktop, gsap, SplitText }) => {
       const root = scope.current;
       if (!root || reduce) return;
 

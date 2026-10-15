@@ -4,10 +4,7 @@ import Image from "next/image";
 import { useRef } from "react";
 import { img } from "@/content/images";
 import { processHeadline, processSteps } from "@/content/process";
-import { gsap, ScrollTrigger } from "@/lib/motion/gsap";
 import { useMotion } from "@/lib/motion/useMotion";
-
-const TICKS = 200; // Millimeter-Ticks des Lineals
 
 /**
  * Moment 3 – Prozess „Vom Strich zum Schrank“.
@@ -20,7 +17,7 @@ export function Process({ compact = false }: { compact?: boolean }) {
   const section = useRef<HTMLElement>(null);
 
   useMotion(
-    ({ reduce, isDesktop }) => {
+    ({ reduce, isDesktop, gsap, ScrollTrigger }) => {
       const root = section.current;
       if (!root || reduce || !isDesktop) return;
 
@@ -130,14 +127,9 @@ export function Process({ compact = false }: { compact?: boolean }) {
             </p>
             <p className="mono text-[0.75rem] text-ink-muted">mm</p>
           </div>
-          <div className="relative mt-3 h-7 overflow-hidden bg-paper-2">
+          <div className="ruler relative mt-3 h-7 overflow-hidden bg-paper-2">
             <div className="ruler-fill absolute inset-0 origin-left bg-accent" />
-            <svg className="absolute inset-0 h-full w-full text-ink" viewBox={`0 0 ${TICKS} 28`} preserveAspectRatio="none">
-              {Array.from({ length: TICKS + 1 }, (_, t) => {
-                const h = t % 10 === 0 ? 14 : t % 5 === 0 ? 9 : 5;
-                return <line key={t} x1={t} x2={t} y1={0} y2={h} stroke="currentColor" strokeWidth={1} vectorEffect="non-scaling-stroke" />;
-              })}
-            </svg>
+            <div className="ruler-ticks absolute inset-0" />
           </div>
         </div>
       </div>

@@ -6,7 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "playwright test",
+    "test:a11y": "playwright test tests/a11y.spec.ts",
+    "assets:fetch": "node scripts/fetch-assets.mjs",
+    "assets:manifest": "node scripts/build-image-manifest.mjs",
+    "contrast": "node scripts/contrast.mjs",
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

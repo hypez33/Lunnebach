@@ -1,11 +1,11 @@
 "use client";
 
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ToggleButton, ToggleButtonGroup, type Key } from "react-aria-components";
 import { ProjectCard } from "@/components/ui/ProjectCard";
 import type { Project, World } from "@/content/types";
 import { DURATION, EASE } from "@/lib/motion/eases";
-import { Flip, gsap, ScrollTrigger } from "@/lib/motion/gsap";
+import { loadMotion, type MotionLib } from "@/lib/motion/gsap";
 import { isMotionReduced } from "@/lib/motion/preference";
 
 type Filter = "alle" | World;
@@ -31,7 +31,13 @@ const PATTERN = [
 export function ProjectGrid({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<Filter>("alle");
   const grid = useRef<HTMLUListElement>(null);
-  const flipState = useRef<Flip.FlipState | null>(null);
+  const flipState = useRef<ReturnType<MotionLib["Flip"]["getState"]> | null>(null);
+  const lib = useRef<MotionLib | null>(null);
+
+  // Plugins nach der Hydration nachladen (Flip wird erst beim Filtern gebraucht)
+  useEffect(() => {
+    loadMotion().then((l) => (lib.current = l));
+  }, []);
 
   const visible = projects.filter((p) => filter === "alle" || p.world === filter);
   const count = visible.length;
@@ -39,8 +45,8 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   const onSelectionChange = (keys: Set<Key>) => {
     const next = [...keys][0] as Filter | undefined;
     if (!next || next === filter) return;
-    if (grid.current && !isMotionReduced()) {
-      flipState.current = Flip.getState(grid.current.querySelectorAll("[data-flip]"));
+    if (grid.current && lib.current && !isMotionReduced()) {
+      flipState.current = lib.current.Flip.getState(grid.current.querySelectorAll("[data-flip]"));
     }
     setFilter(next);
   };
@@ -48,7 +54,9 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   useLayoutEffect(() => {
     const state = flipState.current;
     flipState.current = null;
-    if (!state || !grid.current) return;
+    const l = lib.current;
+    if (!state || !grid.current || !l) return;
+    const { Flip, gsap, ScrollTrigger } = l;
     const tl = Flip.from(state, {
       duration: DURATION.flip,
       ease: EASE.lunnebach,
@@ -116,6 +124,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 aspect={slot.aspect}
                 reveal={false}
                 headingLevel="h2"
+                preload={pos === 0}
               />
             </li>
           );

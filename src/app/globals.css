@@ -104,12 +104,36 @@
     font-family: var(--font-display);
     font-weight: 380;
     letter-spacing: -0.02em;
-    font-variation-settings: "SOFT" 50, "WONK" 0;
+    font-variation-settings: "SOFT" 50;
     text-wrap: balance;
   }
 
   p {
     text-wrap: pretty;
+  }
+
+  /* Lange deutsche Komposita dürfen umbrechen (Reflow 320 px / 400 % Zoom) */
+  h1,
+  h2,
+  h3,
+  h4,
+  p,
+  li,
+  dd,
+  dt,
+  address,
+  label {
+    overflow-wrap: break-word;
+  }
+  @media (max-width: 639px) {
+    p,
+    li,
+    dd,
+    h2,
+    h3 {
+      hyphens: auto;
+      hyphenate-limit-chars: 10 4 4;
+    }
   }
 
   ::selection {
@@ -757,4 +781,18 @@ html[data-menu-open] .site-header {
   .next-project:focus-visible .card-title {
     background-size: 100% 2px;
   }
+}
+
+/* Lineal: Millimeter-Ticks als CSS-Raster (200 mm auf voller Breite) */
+.ruler-ticks {
+  --mm: calc(100% / 200);
+  background-image:
+    repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px calc(var(--mm) * 10)),
+    repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px calc(var(--mm) * 5)),
+    repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px var(--mm));
+  background-size:
+    100% 14px,
+    100% 9px,
+    100% 5px;
+  background-repeat: no-repeat;
 }

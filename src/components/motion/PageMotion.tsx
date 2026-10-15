@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import { gsap, ScrollTrigger, SplitText } from "@/lib/motion/gsap";
 import { DURATION, EASE, STAGGER, START } from "@/lib/motion/eases";
 import { isInitiallyVisible, useMotion } from "@/lib/motion/useMotion";
 
@@ -34,7 +33,7 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
   const scope = useRef<HTMLDivElement>(null);
 
   useMotion(
-    ({ reduce, isDesktop }) => {
+    ({ reduce, isDesktop, gsap, ScrollTrigger, SplitText }) => {
       if (reduce) return;
       const root = scope.current;
       if (!root) return;
@@ -50,6 +49,8 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
           type: "lines",
           mask: "lines",
           linesClass: "split-line",
+          // aria-label ist nur auf Überschriften erlaubt; Absätze (z. B. Zitate) bleiben unverändert lesbar
+          aria: el.matches("h1, h2, h3, h4, h5, h6") ? "auto" : "none",
           autoSplit: true,
           onSplit(self) {
             gsap.set(el, { visibility: "visible" });

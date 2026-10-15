@@ -4,14 +4,13 @@ import { Fraunces, Instrument_Sans, IBM_Plex_Mono } from "next/font/google";
 export const fraunces = Fraunces({
   subsets: ["latin"],
   variable: "--font-fraunces",
-  axes: ["opsz", "SOFT", "WONK"],
+  axes: ["opsz", "SOFT"],
   display: "swap",
 });
 
 export const instrumentSans = Instrument_Sans({
   subsets: ["latin"],
   variable: "--font-instrument",
-  axes: ["wdth"],
   display: "swap",
 });
 

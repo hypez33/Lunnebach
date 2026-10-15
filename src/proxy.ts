@@ -5,8 +5,8 @@ const slugs = new Set(projects.map((p) => p.slug));
 
 /**
  * Unbekannte Projekt-Slugs → echter HTTP-404.
- * Die Detailseite streamt ihren Inhalt in <Suspense> (instant Navigation); dabei wäre der Status
- * bereits 200, bevor notFound() greift. Der Proxy prüft deshalb vorab.
+ * Mit Cache Components wird die App Shell vorab gestreamt; der Status stünde damit schon auf 200,
+ * bevor notFound() in der Seite greift. Der Proxy prüft deshalb vorab.
  */
 export function proxy(request: NextRequest) {
   const slug = request.nextUrl.pathname.split("/")[2];
