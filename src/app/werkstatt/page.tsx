@@ -36,7 +36,7 @@ const machines = [
 
 export default function WerkstattPage() {
   return (
-    <>
+    <PageMotion>
       <PageHeader
         eyebrow="Werkstatt · Über uns"
         title="Fest verwurzelt in Koblenz."
@@ -159,7 +159,6 @@ export default function WerkstattPage() {
       <Values number="05" />
       <CabinetTeaser number="06" />
       <InquiryCta number="07" />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

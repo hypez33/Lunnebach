@@ -12,7 +12,7 @@ import { Workshop } from "@/components/sections/Workshop";
 
 export default function Home() {
   return (
-    <>
+    <PageMotion>
       <Hero />
       <Intro />
       <TwoWorlds />
@@ -23,7 +23,6 @@ export default function Home() {
       <CareerTeaser />
       <CabinetTeaser />
       <InquiryCta />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

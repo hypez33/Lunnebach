@@ -80,6 +80,7 @@ export function ProjectCard({
         <H className="text-h3">
           <Link
             href={`/projekte/${project.slug}`}
+            prefetch={true}
             transitionTypes={["nav-forward"]}
             className="card-title-link outline-none after:absolute after:inset-0 after:z-20"
           >

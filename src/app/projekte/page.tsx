@@ -14,7 +14,7 @@ export const metadata: Metadata = {
 
 export default function ProjectsPage() {
   return (
-    <>
+    <PageMotion>
       <PageHeader
         eyebrow="Projekte"
         title="Arbeiten, die es nur einmal gibt."
@@ -26,7 +26,6 @@ export default function ProjectsPage() {
         </div>
       </section>
       <InquiryCta number="02" showMap={false} />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

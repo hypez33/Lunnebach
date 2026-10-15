@@ -1,3 +1,4 @@
+import { ApplicationForm } from "@/components/forms/ApplicationForm";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { site } from "@/content/site";
 
@@ -22,7 +23,9 @@ export function ApplicationSection() {
             </a>
           </p>
         </div>
-        <div className="col-span-4 md:col-span-8 lg:col-span-7 lg:col-start-6">{/* Formular folgt in Phase 6 */}</div>
+        <div className="col-span-4 md:col-span-8 lg:col-span-7 lg:col-start-6">
+          <ApplicationForm />
+        </div>
       </div>
     </section>
   );

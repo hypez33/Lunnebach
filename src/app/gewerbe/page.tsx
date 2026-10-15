@@ -23,7 +23,7 @@ const trades = [
 
 export default function GewerbePage() {
   return (
-    <>
+    <PageMotion>
       <PageHeader
         eyebrow="Gewerbe · Objekteinrichtung"
         title="Räume, in denen Unternehmen wirken."
@@ -63,7 +63,6 @@ export default function GewerbePage() {
 
       <WorldProjects world="gewerbe" number="06" />
       <InquiryCta number="07" />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

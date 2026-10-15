@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ViewTransition } from "react";
+import { Suspense, ViewTransition } from "react";
 import { PageMotion } from "@/components/motion/PageMotion";
 import { InquiryCta } from "@/components/sections/InquiryCta";
 import { Arrow } from "@/components/ui/ButtonLink";
@@ -28,7 +28,34 @@ export async function generateMetadata({ params }: PageProps<"/projekte/[slug]">
   };
 }
 
-export default async function ProjectPage({ params }: PageProps<"/projekte/[slug]">) {
+/**
+ * Inhalt hängt an `params` → in <Suspense>, damit die App Shell sofort steht.
+ * Projektlinks nutzen prefetch={true}, so ist die Seite beim Klick bereits geladen
+ * (Voraussetzung für das View-Transition-Morphing Karte → Hero).
+ */
+export default function ProjectPage({ params }: PageProps<"/projekte/[slug]">) {
+  return (
+    <Suspense fallback={<ProjectShell />}>
+      <ProjectContent params={params} />
+    </Suspense>
+  );
+}
+
+function ProjectShell() {
+  return (
+    <div className="container-site min-h-[80vh] pt-[calc(var(--header-h)+3rem)]">
+      <div className="grid-12 gap-y-10">
+        <div className="col-span-4 aspect-[4/3] max-w-[800px] bg-paper-2 md:col-span-8 lg:col-span-7" />
+        <div className="col-span-4 flex flex-col justify-end gap-4 md:col-span-8 lg:col-span-4 lg:col-start-9">
+          <div className="h-3 w-32 bg-paper-2" />
+          <div className="h-16 w-full bg-paper-2" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+async function ProjectContent({ params }: { params: PageProps<"/projekte/[slug]">["params"] }) {
   const { slug } = await params;
   const project = getProject(slug);
   if (!project) notFound();
@@ -53,7 +80,7 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
   ];
 
   return (
-    <>
+    <PageMotion>
       <article aria-labelledby="project-title">
         {/* Hero */}
         <header className="relative overflow-hidden pt-[var(--header-h)]">
@@ -172,7 +199,8 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
       <nav aria-label="Nächstes Projekt" className="border-t border-line">
         <Link
           href={`/projekte/${next.slug}`}
-          transitionTypes={["nav-forward"]}
+          prefetch={true}
+            transitionTypes={["nav-forward"]}
           className="next-project group container-site grid-12 items-center gap-y-8 py-[clamp(4rem,9vw,9rem)]"
         >
           <div className="col-span-4 md:col-span-5 lg:col-span-6">
@@ -208,7 +236,6 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
       </nav>
 
       <InquiryCta number={null} showMap={false} />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

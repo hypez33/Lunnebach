@@ -19,7 +19,7 @@ const siegel = img("brand/siegel");
 
 export default function KarrierePage() {
   return (
-    <>
+    <PageMotion>
       <PageHeader
         eyebrow="Karriere"
         title="Arbeite da, wo Unikate entstehen."
@@ -163,7 +163,6 @@ export default function KarrierePage() {
       </section>
 
       <ApplicationSection />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

@@ -16,7 +16,7 @@ export const metadata: Metadata = {
 
 export default function PrivatPage() {
   return (
-    <>
+    <PageMotion>
       <PageHeader
         eyebrow="Privat · Wohnräume"
         title="Wohnräume, die zu Ihnen passen."
@@ -28,7 +28,6 @@ export default function PrivatPage() {
       ))}
       <WorldProjects world="privat" number="06" />
       <InquiryCta number="07" />
-      <PageMotion />
-    </>
+    </PageMotion>
   );
 }

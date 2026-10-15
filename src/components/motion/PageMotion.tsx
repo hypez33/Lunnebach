@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { useRef } from "react";
 import { gsap, ScrollTrigger, SplitText } from "@/lib/motion/gsap";
 import { DURATION, EASE, STAGGER, START } from "@/lib/motion/eases";
 import { isInitiallyVisible, useMotion } from "@/lib/motion/useMotion";
@@ -24,17 +24,19 @@ const nf = (decimals: number) =>
  *  - [data-count]        Zahl zählt einmalig hoch
  * Ohne JS bzw. bei reduzierter Bewegung bleibt alles statisch sichtbar.
  *
- * Wichtig: als LETZTES Element jeder Seite rendern (nicht im Layout). Mit Cache Components
- * hydriert das Seitensegment getrennt vom Layout; liefe der Code im Layout, würde er das DOM
- * vor der Hydration der Seite verändern (Hydration-Mismatch).
+ * Wichtig: umschließt den Inhalt JEDER Seite (nicht im Layout):
+ *  - Mit Cache Components hydriert das Seitensegment getrennt vom Layout; liefe der Code im Layout,
+ *    würde er das DOM vor der Hydration der Seite verändern (Hydration-Mismatch).
+ *  - Next hält besuchte Seiten versteckt im DOM (<Activity>); der Scope verhindert, dass Animationen
+ *    an Elementen fremder (versteckter) Seiten hängen.
  */
-export function PageMotion() {
-  const pathname = usePathname();
+export function PageMotion({ children }: { children: React.ReactNode }) {
+  const scope = useRef<HTMLDivElement>(null);
 
   useMotion(
     ({ reduce, isDesktop }) => {
       if (reduce) return;
-      const root = document.getElementById("main");
+      const root = scope.current;
       if (!root) return;
 
       // Moment 5 – Sektionsheadlines
@@ -126,8 +128,8 @@ export function PageMotion() {
       const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
       return () => cancelAnimationFrame(raf);
     },
-    { dependencies: [pathname] },
+    { scope },
   );
 
-  return null;
+  return <div ref={scope}>{children}</div>;
 }
