@@ -26,11 +26,9 @@ const nextConfig: NextConfig = {
       ["/kontakt-2", "/anfrage"],
       ["/haftungsausschluss", "/impressum"],
     ];
-    // statusCode 301 statt `permanent` (das wäre 308), damit es exakt der alten Weiterleitung entspricht
-    return map.flatMap(([source, destination]) => [
-      { source, destination, statusCode: 301 as const },
-      { source: `${source}/`, destination, statusCode: 301 as const },
-    ]);
+    // statusCode 301 statt `permanent` (das wäre 308). Varianten mit Schrägstrich am Ende
+    // normalisiert Next.js vorher selbst (308 → ohne Slash → 301).
+    return map.map(([source, destination]) => ({ source, destination, statusCode: 301 as const }));
   },
 };
 
