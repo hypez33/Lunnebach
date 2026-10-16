@@ -4,60 +4,40 @@ import { ProjectCard } from "@/components/ui/ProjectCard";
 import { home } from "@/content/pages";
 import { featuredProjects } from "@/content/projects";
 
-/** Editorial-Layout: bewusst asymmetrisch, Bildbreiten nie über nativ 800 px (max-w). */
+/**
+ * Editorial-Raster in zwei versetzten Spalten (7 + 5), die etwa gleich hoch sind – keine Löcher zwischen
+ * den Karten. Bilder nie breiter als nativ (alle ~800 px): links max. ~740 px, rechts ~540 px.
+ */
 export function FeaturedProjects() {
   const [a, b, c, d] = featuredProjects;
   return (
     <section aria-labelledby="featured-title" className="section-y border-t border-line">
       <div className="container-site">
-        <div className="grid-12 gap-y-6">
-          <Eyebrow className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
-            Projekte
-          </Eyebrow>
-          <h2 id="featured-title" data-split className="col-span-4 text-h2 md:col-span-6 lg:col-span-6">
+        <div className="grid-12 items-end gap-y-6">
+          <Eyebrow className="col-span-4 self-start text-ink-muted md:col-span-8 lg:col-span-3">Projekte</Eyebrow>
+          <h2 id="featured-title" data-split className="col-span-4 text-h2 md:col-span-5 lg:col-span-5">
             {home.featured.title}
           </h2>
-          <p className="col-span-4 self-end text-lead text-ink-muted md:col-span-6 lg:col-span-3">{home.featured.intro}</p>
+          <div className="col-span-4 flex flex-col items-start gap-6 md:col-span-3 lg:col-span-4">
+            <p className="text-lead text-ink-muted">{home.featured.intro}</p>
+            <ButtonLink href="/projekte" variant="secondary" className="hidden md:inline-flex">
+              Alle Projekte
+            </ButtonLink>
+          </div>
         </div>
 
-        <div className="grid-12 mt-[clamp(3.5rem,7vw,7rem)] gap-y-[clamp(4rem,8vw,8rem)]">
-          {a && (
-            <ProjectCard
-              project={a}
-              scrollDimension
-              sizes="(min-width: 1024px) 800px, 100vw"
-              className="col-span-4 max-w-[800px] md:col-span-7 lg:col-span-7"
-            />
-          )}
-          {b && (
-            <ProjectCard
-              project={b}
-              scrollDimension
-              sizes="(min-width: 1024px) 520px, 100vw"
-              aspect="4 / 5"
-              className="col-span-4 max-w-[560px] md:col-span-5 md:mt-40 lg:col-span-4 lg:col-start-9 lg:mt-[22rem]"
-            />
-          )}
-          {c && (
-            <ProjectCard
-              project={c}
-              scrollDimension
-              sizes="(min-width: 1024px) 680px, 100vw"
-              className="col-span-4 max-w-[800px] md:col-span-6 lg:col-span-6 lg:col-start-2"
-            />
-          )}
-          {d && (
-            <ProjectCard
-              project={d}
-              scrollDimension
-              sizes="(min-width: 1024px) 560px, 100vw"
-              aspect="4 / 3"
-              className="col-span-4 max-w-[640px] md:col-span-6 md:mt-24 lg:col-span-4 lg:col-start-9 lg:mt-48"
-            />
-          )}
+        <div className="mt-[clamp(3rem,6vw,5.5rem)] grid gap-y-[clamp(3.5rem,6vw,5rem)] md:grid-cols-12 md:gap-x-[clamp(1.5rem,3vw,3rem)]">
+          <div className="flex flex-col gap-y-[clamp(3.5rem,6vw,5rem)] md:col-span-7">
+            {a && <ProjectCard project={a} scrollDimension aspect="4 / 3" sizes="(min-width: 1024px) 760px, (min-width: 768px) 58vw, 100vw" />}
+            {c && <ProjectCard project={c} scrollDimension aspect="3 / 2" sizes="(min-width: 1024px) 760px, (min-width: 768px) 58vw, 100vw" />}
+          </div>
+          <div className="flex flex-col gap-y-[clamp(3.5rem,6vw,5rem)] md:col-span-5 md:pt-[clamp(3rem,7vw,6rem)]">
+            {b && <ProjectCard project={b} scrollDimension aspect="1 / 1" sizes="(min-width: 1024px) 560px, (min-width: 768px) 42vw, 100vw" />}
+            {d && <ProjectCard project={d} scrollDimension aspect="4 / 3" sizes="(min-width: 1024px) 560px, (min-width: 768px) 42vw, 100vw" />}
+          </div>
         </div>
 
-        <div className="mt-[clamp(4rem,7vw,6rem)] flex justify-center border-t border-line pt-10">
+        <div className="mt-12 flex justify-center border-t border-line pt-8 md:hidden">
           <ButtonLink href="/projekte" variant="secondary">
             Alle Projekte
           </ButtonLink>
