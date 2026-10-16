@@ -101,7 +101,11 @@ Prüfskript: `npm run contrast` (`scripts/contrast.mjs`).
 - **Moment 3 Prozess:** gepinnte Horizontal-Strecke nur Desktop + volle Bewegung (Klasse `process--horizontal` per JS),
   `scrub: 1`, Lineal mit Millimeter-Ticks (CSS-Raster statt 200 SVG-Linien), Zähler `01 / 05`, Bilder von Skizze
   (Graustufen + Linien-Overlay) zu Farbe über eine CSS-Variable `--c` je Schritt. Keine fokussierbaren Elemente in der Strecke.
-- **Moment 4 Projekte:** Filter als React-Aria-`ToggleButtonGroup`, Umsortieren mit GSAP Flip, Ergebnis per
+- **Moment 4 Projekte:** Filter als React-Aria-`ToggleButtonGroup`, gleitendes Umsortieren mit GSAP Flip (0,7 s).
+  Die Rasterhöhe wird mitanimiert, während nur die Karten absolut positioniert sind. Bildformate bleiben je
+  Projekt konstant; Texte werden nicht skaliert. ScrollTrigger im Raster pausieren bis zum fertigen Layout.
+  Schnelle Wechsel schließen vorherige Flip-Animationen samt temporären Styles sauber ab;
+  bei reduzierter Bewegung wird direkt gefiltert. Ergebnis per
   `role="status"` angesagt. **View Transitions** über React 19.3 `<ViewTransition name share="morph">` an Karte und
   Detail-Hero (Next 16 aktiviert das ohne Konfiguration); bei reduzierter Bewegung abgeschaltet.
 - **Moment 5 Text-Reveals:** SplitText `lines` mit Maske, 0,7 s. `aria` nur bei Überschriften (`aria-label` auf `<p>`
