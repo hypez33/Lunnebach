@@ -6,7 +6,7 @@ import { ProjectCard } from "@/components/ui/ProjectCard";
 import type { Project, World } from "@/content/types";
 import { DURATION, EASE } from "@/lib/motion/eases";
 import { loadMotion, type MotionLib } from "@/lib/motion/gsap";
-import { isMotionReduced } from "@/lib/motion/preference";
+import { useMotionPreference } from "@/lib/motion/preference";
 
 type Filter = "alle" | World;
 
@@ -26,17 +26,25 @@ const PATTERN = [
 
 /**
  * Moment 4 – Projektübersicht mit Filter (Alle / Privat / Gewerbe).
- * Umsortieren mit GSAP Flip; ohne JS sind alle Projekte sichtbar.
+ * GSAP Flip verschiebt die Karten und animiert die Rasterhöhe mit.
+ * Ohne JS sind alle Projekte sichtbar.
  */
 export function ProjectGrid({ projects }: { projects: Project[] }) {
   const [filter, setFilter] = useState<Filter>("alle");
+  const { reduced } = useMotionPreference();
   const grid = useRef<HTMLUListElement>(null);
-  const flipState = useRef<ReturnType<MotionLib["Flip"]["getState"]> | null>(null);
   const lib = useRef<MotionLib | null>(null);
+  const flipState = useRef<ReturnType<MotionLib["Flip"]["getState"]> | null>(null);
 
-  // Plugins nach der Hydration nachladen (Flip wird erst beim Filtern gebraucht)
+  // Plugins nach der Hydration nachladen.
   useEffect(() => {
-    loadMotion().then((l) => (lib.current = l));
+    let alive = true;
+    loadMotion().then((l) => {
+      if (alive) lib.current = l;
+    });
+    return () => {
+      alive = false;
+    };
   }, []);
 
   const visible = projects.filter((p) => filter === "alle" || p.world === filter);
@@ -45,32 +53,53 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
   const onSelectionChange = (keys: Set<Key>) => {
     const next = [...keys][0] as Filter | undefined;
     if (!next || next === filter) return;
-    if (grid.current && lib.current && !isMotionReduced()) {
-      flipState.current = lib.current.Flip.getState(grid.current.querySelectorAll("[data-flip]"));
+    if (grid.current && lib.current && !reduced) {
+      // getState schließt eine laufende Flip-Animation samt Styles ab, bevor neu gemessen wird.
+      flipState.current = lib.current.Flip.getState([
+        grid.current,
+        ...grid.current.querySelectorAll<HTMLElement>("[data-project]"),
+      ]);
     }
     setFilter(next);
   };
 
   useLayoutEffect(() => {
+    const root = grid.current;
+    const l = lib.current;
     const state = flipState.current;
     flipState.current = null;
-    const l = lib.current;
-    if (!state || !grid.current || !l) return;
+    if (!root || !l) return;
     const { Flip, gsap, ScrollTrigger } = l;
-    const tl = Flip.from(state, {
+    if (!state || reduced) {
+      ScrollTrigger.refresh();
+      return;
+    }
+
+    const cards = root.querySelectorAll<HTMLElement>("[data-project]");
+    // Parallax und Touch-Zustände sollen erst das fertige Raster auswerten.
+    const triggers = ScrollTrigger.getAll().filter((trigger) => root.contains(trigger.trigger ?? null));
+    triggers.forEach((trigger) => trigger.disable(false));
+    const finish = () => {
+      triggers.forEach((trigger) => trigger.enable(false, false));
+      ScrollTrigger.refresh();
+    };
+    const animation = Flip.from(state, {
       duration: DURATION.flip,
       ease: EASE.lunnebach,
-      absolute: true,
+      // Nur Karten absolut positionieren. Das Raster selbst bleibt im Flow und animiert seine Höhe.
+      absolute: cards,
       nested: true,
+      scale: false,
       prune: true,
-      onEnter: (els) => gsap.fromTo(els, { autoAlpha: 0, y: 24 }, { autoAlpha: 1, y: 0, duration: 0.6, delay: 0.15, ease: EASE.out }),
-      onLeave: (els) => gsap.to(els, { autoAlpha: 0, duration: 0.25 }),
-      onComplete: () => ScrollTrigger.refresh(),
+      onEnter: (els) => gsap.fromTo(els, { opacity: 0 }, { opacity: 1, duration: 0.45, delay: 0.12 }),
+      onLeave: (els) => gsap.to(els, { opacity: 0, duration: 0.2 }),
+      onComplete: finish,
     });
     return () => {
-      tl.kill();
+      // kill() allein hinterlässt absolute Positionen und Zwischenmaße.
+      animation.progress(1).kill();
     };
-  }, [filter]);
+  }, [filter, reduced]);
 
   const order = new Map(visible.map((p, i) => [p.slug, i]));
 
@@ -104,23 +133,25 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
         </p>
       </div>
 
-      <ul ref={grid} className="grid-12 mt-[clamp(1.75rem,4vw,4rem)] gap-y-[clamp(3.5rem,7vw,7rem)]">
-        {projects.map((project) => {
+      <ul ref={grid} className="grid-12 relative mt-[clamp(1.75rem,4vw,4rem)] gap-y-[clamp(3.5rem,7vw,7rem)]">
+        {projects.map((project, index) => {
           const pos = order.get(project.slug);
           const shown = pos !== undefined;
           const slot = PATTERN[(pos ?? 0) % PATTERN.length];
           return (
             <li
               key={project.slug}
-              data-flip={project.slug}
+              data-project={project.slug}
               data-flip-id={project.slug}
-              hidden={!shown}
+              aria-hidden={!shown || undefined}
+              inert={!shown}
+              style={{ display: shown ? undefined : "none" }}
               className={`col-span-4 ${slot.cls}`}
             >
               <ProjectCard
                 project={project}
                 sizes={slot.sizes}
-                aspect={slot.aspect}
+                aspect={PATTERN[index % PATTERN.length].aspect}
                 reveal={false}
                 headingLevel="h2"
                 preload={pos === 0}
