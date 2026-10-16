@@ -906,6 +906,8 @@ html[data-menu-open] .site-header {
 }
 .process--stack .process-number {
   font-size: 3.25rem;
+  /* kleiner gesetzt → accent-text (5,21:1) statt accent (2,93:1) */
+  color: var(--color-accent-text);
 }
 .process--stack .process-step h3 {
   margin-top: 0.5rem;

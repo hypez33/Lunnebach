@@ -66,6 +66,33 @@ test("Ohne JavaScript ist der Inhalt sichtbar", async ({ browser }) => {
   await ctx.close();
 });
 
+test("Reduzierte Bewegung: alles sofort sichtbar, kein Motion-Element behält Clip oder visibility:hidden", async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  for (const route of ["/", "/privat", "/projekte", "/projekte/emser-therme", "/werkstatt", "/anfrage"]) {
+    await page.goto(route, { waitUntil: "networkidle" });
+    // kein Scrollen – Inhalte dürfen nicht erst durch Scroll-Trigger erscheinen
+    const stuck = await page.evaluate(() => {
+      const motion =
+        // [data-scrub-clip] fehlt bewusst: Dessen Ruhezustand ist die gestaltete Rahmung inset(4%), kein Motion-Rest
+        "[data-hero-hidden],[data-hero-door],[data-hero-fade],[data-clip],[data-split],[data-parallax],.process-step,.split-line,[data-count]";
+      const bad: string[] = [];
+      for (const el of document.querySelectorAll<HTMLElement>(`main ${motion}, main ${motion} *`)) {
+        if (el.closest("[hidden], .sr-only, [aria-hidden=true]")) continue; // dekorative Ebenen (Skizze, Maßketten) ausgenommen
+        const cs = getComputedStyle(el);
+        const clipped = cs.clipPath && cs.clipPath !== "none";
+        if (cs.visibility === "hidden" || clipped || Number(cs.opacity) < 0.99) {
+          bad.push(`${el.tagName.toLowerCase()}.${String(el.className).split(" ")[0]} (${cs.visibility}/${cs.clipPath}/${cs.opacity})`);
+        }
+      }
+      return bad.slice(0, 8);
+    });
+    expect(stuck, route).toEqual([]);
+    // Neue Effekte aus: kein Stapel, keine Lese-Fortschrittslinie, keine aktive In-View-Klasse
+    await expect(page.locator(".process--stack, .process--horizontal")).toHaveCount(0);
+    await expect(page.locator(".read-progress")).toBeHidden();
+  }
+});
+
 test("Unbekannte Projekte liefern 404", async ({ request }) => {
   const res = await request.get("/projekte/gibt-es-nicht");
   expect(res.status()).toBe(404);

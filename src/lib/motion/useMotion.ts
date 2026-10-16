@@ -24,6 +24,12 @@ export type MotionContext = {
   isTouch: boolean;
   /** (hover: hover) and (pointer: fine) */
   canHover: boolean;
+  /**
+   * Führt `fn` in einem eigenen Task aus (Reihenfolge bleibt erhalten), innerhalb desselben GSAP-Kontexts –
+   * wird also beim Revert mit aufgeräumt. Hält lange Tasks nach dem Laden kurz (TBT/INP); für alles
+   * unterhalb des Folds. Gibt `fn` eine Funktion zurück, läuft sie beim Aufräumen.
+   */
+  defer: (fn: () => void | (() => void)) => void;
 } & MotionLib;
 
 type Setup = (ctx: MotionContext) => void | (() => void);
@@ -49,14 +55,32 @@ export function useMotion(
         mm = gsap.matchMedia(scope?.current ?? undefined);
         mm.add(MOTION_QUERIES, (ctx) => {
           const c = ctx.conditions as Record<keyof typeof MOTION_QUERIES, boolean>;
-          return setup({
+          const timers: number[] = [];
+          const cleanups: (() => void)[] = [];
+          const defer = (fn: () => void | (() => void)) => {
+            timers.push(
+              window.setTimeout(() => {
+                ctx.add(() => {
+                  const undo = fn();
+                  if (undo) cleanups.push(undo);
+                });
+              }, 0),
+            );
+          };
+          const undo = setup({
             ...lib,
             reduce: c.reduceMotion || isUserReduced(),
             isDesktop: c.isDesktop,
             isMobile: c.isMobile,
             isTouch: c.isTouch,
             canHover: c.canHover,
+            defer,
           });
+          return () => {
+            timers.forEach(clearTimeout);
+            cleanups.forEach((f) => f());
+            undo?.();
+          };
         });
         markMotionReady();
       });

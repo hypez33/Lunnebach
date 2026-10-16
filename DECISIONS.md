@@ -164,3 +164,63 @@ Prüfskript: `npm run contrast` (`scripts/contrast.mjs`).
   CLS überall 0. Die beobachtete LCP liegt lokal bei ~0,2 s; der simulierte Wert (3,2–4,1 s) entsteht, weil Lighthouse
   alle früh angeforderten JS-Chunks (React/Next-Runtime) samt 4-facher CPU-Drosselung in den Pfad der Text-LCP rechnet.
   **Ziel ≥ 90 ist damit nur auf der Startseite erreicht** – nächste Hebel siehe README („Nächste Schritte“).
+
+---
+
+## Mobile-Motion-Überarbeitung (Runde 2)
+
+Ziel: Mobil fühlt sich so hochwertig an wie Desktop, mit eigener Choreografie für Touch und Hochformat statt „Desktop in klein“.
+
+### Infrastruktur
+- `useMotion` kennt jetzt `isDesktop`, `isMobile` (≤ 1023 px), `isTouch` (`hover: none` + `pointer: coarse`) und `canHover`.
+- **`defer()`**: Setups unterhalb des Folds laufen in eigenen Tasks im selben GSAP-Kontext. Vorher entstand nach dem Laden der Plugins ein langer Task (~330 ms bei 4-facher CPU-Drosselung). SplitText bekommt pro Headline einen eigenen Task.
+- `ScrollTrigger.config({ ignoreMobileResize: true })` in `loadMotion()`. Vollhöhen nutzen `svh`/`dvh`.
+- **„In-view active“** (`data-active-in-view`): Auf Touch-Geräten ist ein Element `.is-active`, solange es zwischen 65 % und 35 % der Bildhöhe steht. Alle eigenen `:hover`-Regeln stecken in `@media (hover: hover)`, damit nach dem Tippen kein Hover „kleben“ bleibt. Tailwinds `hover:` tut das ohnehin.
+- **Tap-Feedback**: Utility `press` (scale 0,98 · 120 ms, bei reduzierter Bewegung nur Aufhellen) auf Buttons, Karten, Filter-Chips, Auswahlkarten und Menüpunkten. Dazu `-webkit-tap-highlight-color: transparent` und ein leerer `touchstart`-Listener im Boot-Skript, ohne den `:active` auf iOS nicht greift.
+
+### Choreografie mobil
+| Sektion | Bewegungsmoment |
+|---|---|
+| Hero | Anrisslinie, Subline und CTAs steigen auf (CSS ab dem ersten Paint). Die Tür öffnet sich von unten, sobald das Bild ins Bild kommt (es liegt auf allen Testgeräten unter dem Fold). Danach zeichnet sich „H 2 180“, beim Scrollen gleitet das Bild samt Maßkette parallax (−6 %). |
+| Intro / Headlines | zeilenweise, mobil kürzer (yPercent 60, 0,6 s, Stagger 0,06) |
+| Zwei Welten | Der Clip öffnet sich an den Scroll gekoppelt (scrub), in der Bildmitte folgen Bildzoom und CTA-Linie |
+| Projekte | In der Bildmitte zeichnet sich die Maßkette (DrawSVG), dazu Titel-Linie, Zoom, Parallax ±5 % im Rahmen und ein Press-State vor der View Transition |
+| Prozess | **Werkbank-Stapel**: Sticky-Karten, die verdeckte tritt zurück (scale 0,94 + Abdunklung), Skizze → Farbe, vertikales Lineal mit Zähler „01 / 05“ |
+| Werkstatt | Zahlen zählen hoch, auch wenn sie beim Laden schon sichtbar sind; Bild-Reveals |
+| Haltung, Karriere, Cabinet, Anfrage | Headline-Reveals, Clip-Reveals, Schiebetür (Cabinet) |
+| Galerie | gestaffelte Reveals, Lightbox mit Flip aus der Kachel, Wischgesten, Rubber-Band an Bild 1/N, nach unten wischen schließt |
+| Menü | Schiebetür von rechts (clip-path), zeilenweise Mask-Reveals, mitzählende Nummern, Anriss unter dem aktiven Punkt; Schließen läuft rückwärts und schneller |
+| Header | Lese-Fortschritt als 2-px-Anrisslinie. Blendet der Header aus, bleibt die Linie am oberen Rand. Scrollwerte sind auf [0, max] begrenzt, damit der iOS-Overscroll nicht flackert |
+| Anfrage | Schritt gleitet aus der Laufrichtung herein, Fortschritt füllt sich, Haken zeichnet sich |
+
+### Entscheidungen und verworfene Varianten
+- **Hero-Headline mobil sofort sichtbar.** Gemessen (Lighthouse mobil, 3 Läufe, Median): Mit SplitText-Reveal stieg der LCP von 3,5 auf 5,4 s (+1,9 s). Mit CSS-Reveal ab dem ersten Paint lag er bei 5,0–5,4 s, weil Chrome Text, der mit opacity 0 beginnt, nicht als LCP wertet. Beide Varianten sind verworfen. Umgesetzt ist die schonende Variante aus dem Briefing: Headline steht sofort, Subline und CTAs steigen per CSS auf und warten nicht auf JS. Ergebnis: LCP 3,5 s, also wie vorher. Die Seiten-H1 der Unterseiten behalten den kurzen Reveal, denn ihr LCP-Element ist der Intro-Absatz (`/privat`: 3,5 → 3,3 s).
+- **Skizze → Farbe ohne Filter**: Im Stapel entsättigt eine graue Ebene mit `mix-blend-mode: saturation`, und nur deren Opacity scrubbt. So läuft mobil kein einziger Filter-Scrub.
+- **Stapel-Logik**: Ein einziger ScrollTrigger steuert alle Karten. Die Positionen werden aus dem Layout berechnet (Höhen + Gap), weil ScrollTrigger-Messungen auf Sticky-Elementen unzuverlässig sind. Passt eine Karte samt Versatz nicht in die Viewport-Höhe, bleibt es bei der Liste. iPhone SE (667 px) passt.
+- **Lineal und Zähler** sind nur in der Horizontal-Strecke bzw. im Stapel sichtbar. Das statische „05 / 05“ gibt es nicht mehr.
+- **Lightbox und Menü** animieren über `onEnter`/`onExit` von React Aria (Promise). Fokusfalle, Escape und Fokusrückgabe bleiben bei React Aria. Gewischt wird mit Pointer Events (`touch-action: pinch-zoom`, Pinch-Zoom bleibt erhalten). Die Buttons blättern weiter rundum, Wischen endet an Bild 1/N mit Rubber-Band.
+- **View Transitions**: In Chrome Android (emuliert) morpht die Karte in den Detail-Hero. iOS Safari konnte hier nicht getestet werden (siehe unten). Fehlt `startViewTransition`, navigiert React ohne Morph, das ist der saubere Fallback.
+- **`will-change`** gibt es nur während der Sichtbarkeit (Parallax per `onToggle`), nie dauerhaft.
+- **Kontrast**: Die kleineren Schrittziffern im Stapel nutzen `accent-text` (5,21:1), denn `accent` hätte nur 2,93:1.
+- `partialPrefetching: true` war bereits explizit gesetzt, der Build zeigt keine Warnung.
+
+### Messwerte vorher → nachher (Lighthouse mobil, lokal, simuliertes Throttling)
+Die Werte streuen auf dieser Maschine stark. TBT schwankte bei identischem Build zwischen 0,4 und 5,4 s, daher Mediane bzw. Spannen.
+
+| Seite | Perf. vorher | Perf. nachher | LCP vorher → nachher | A11y | CLS |
+|---|---|---|---|---|---|
+| `/` | 86 (62–88) | 78 (71–81) | 3,5 → 3,5 s | 100 | 0 |
+| `/privat` | 82 (74–86) | 88 | 3,5 → 3,3–3,6 s | 100 | 0 |
+| `/projekte` | 86 | 81–82 | → 4,1 s | 100 | 0 |
+| `/projekte/emser-therme` | 85 | 79–81 | → 4,1–4,2 s | 100 | 0 |
+| `/anfrage` | 85 | 71 | → 3,4–3,6 s | 100 | 0 |
+| `/karriere` | 82–86 | 52–73 | → 3,6 s | 100 | 0 |
+
+- **Ziel Performance ≥ 90 nicht erreicht.** Die langen Tasks liegen fast vollständig in der React/Next-Hydration (Framework-Chunk). Eigener Motion-Code taucht nach `defer()` nur noch in kurzen Tasks auf. Nächste Hebel: Hydration verkleinern (React Aria auf `/anfrage`/`/projekte` durch native Muster ersetzen), Fraunces-Subset, Messung auf ruhiger Hardware bzw. mit PageSpeed Insights wiederholen.
+- **Scrub bei 4-facher CPU-Drosselung** (Pixel 7, rAF-Intervalle beim Wheel-Scroll): Werkbank-Stapel im Median 16,7 ms (60 fps), p95 33 ms. „Zwei Welten + Projekte“ im Median 33 ms (30 fps), p95 50 ms. In diesem Abschnitt dekodieren gleichzeitig die Bilder, und der Clip-Scrub löst Repaints aus.
+- INP wurde nicht separat gemessen. Die Tap-Handler sind leichtgewichtig, und lange Tasks nach dem Laden sind aufgeteilt.
+
+### Tests
+- Playwright-Projekte `iphone-13`, `iphone-se` (3rd gen, 375 × 667) und `pixel-7` führen `tests/mobile-motion.spec.ts` aus: Rundgang mit echten Wheel- und Touch-Events (CDP), Video unter `qa/videos/`. **Die iPhones laufen in Chromium mit Geräte-Emulation**, denn WebKit ist zwar installiert, braucht unter WSL aber Systembibliotheken (libgtk-4, libgraphene, libxslt, libevent), deren Installation sudo erfordert. Safari-spezifisches Verhalten (View Transitions, Overscroll, `:active`) ist damit **nicht** auf echtem WebKit geprüft.
+- Letzter vollständiger Lauf: 176 bestanden, 2 fehlgeschlagen. Beide Fehler kamen aus dem neuen Reduced-Motion-Test, der die gestaltete Rahmung der „Zwei Welten“ (`inset(4%)`, Ruhezustand) als Clip wertete. Der Selektor ist korrigiert, **der korrigierte Test wurde nicht erneut ausgeführt.** Alle axe-Tests (Desktop + Mobil, mit und ohne reduzierte Bewegung) und die drei Geräte-Rundgänge waren grün.
+- Desktop-Screenshots vorher liegen vor. Ein systematischer Vorher/Nachher-Vergleich wurde nicht mehr durchgeführt. Die Desktop-Pfade (Hover, Horizontal-Strecke, Hero) sind im Code unverändert, nur in `@media (hover: hover)` gekapselt.

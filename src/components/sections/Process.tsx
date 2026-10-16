@@ -22,7 +22,7 @@ export function Process({ compact = false }: { compact?: boolean }) {
   const section = useRef<HTMLElement>(null);
 
   useMotion(
-    ({ reduce, isDesktop, gsap, ScrollTrigger }) => {
+    ({ reduce, isDesktop, defer, gsap, ScrollTrigger }) => {
       const root = section.current;
       if (!root || reduce) return;
 
@@ -31,47 +31,52 @@ export function Process({ compact = false }: { compact?: boolean }) {
       const steps = gsap.utils.toArray<HTMLElement>(".process-step", root);
       const n = steps.length;
 
-      if (!isDesktop) return setupStack();
+      // Unterhalb des Folds: eigener Task (kurze Tasks nach dem Laden)
+      defer(isDesktop ? setupHorizontal : setupStack);
 
-      const pin = root.querySelector<HTMLElement>(".process-pin")!;
-      const fill = root.querySelector<HTMLElement>(".ruler-fill");
-      const counter = root.querySelector<HTMLElement>(".process-ruler .process-counter-current");
+      /** Desktop: gepinnte Horizontal-Strecke */
+      function setupHorizontal() {
+        if (!root) return;
+        const pin = root.querySelector<HTMLElement>(".process-pin")!;
+        const fill = root.querySelector<HTMLElement>(".ruler-fill");
+        const counter = root.querySelector<HTMLElement>(".process-ruler .process-counter-current");
 
-      root.classList.add("process--horizontal");
-      const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
+        root.classList.add("process--horizontal");
+        const distance = () => Math.max(0, track.scrollWidth - viewport.clientWidth);
 
-      const setColor = (p: number) => {
-        const pos = p * (n - 1);
-        steps.forEach((s, i) => {
-          const c = gsap.utils.clamp(0, 1, pos - i + 1);
-          s.style.setProperty("--c", c.toFixed(3));
+        const setColor = (p: number) => {
+          const pos = p * (n - 1);
+          steps.forEach((s, i) => {
+            const c = gsap.utils.clamp(0, 1, pos - i + 1);
+            s.style.setProperty("--c", c.toFixed(3));
+          });
+          if (counter) counter.textContent = pad(Math.min(n, Math.round(pos) + 1));
+        };
+        setColor(0);
+
+        const tween = gsap.to(track, { x: () => -distance(), ease: "none" });
+        if (fill) gsap.set(fill, { scaleX: 0 });
+
+        const st = ScrollTrigger.create({
+          trigger: root,
+          pin,
+          start: "top top",
+          end: () => "+=" + distance(),
+          scrub: 1,
+          animation: tween,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            setColor(self.progress);
+            if (fill) gsap.set(fill, { scaleX: self.progress });
+          },
         });
-        if (counter) counter.textContent = pad(Math.min(n, Math.round(pos) + 1));
-      };
-      setColor(0);
 
-      const tween = gsap.to(track, { x: () => -distance(), ease: "none" });
-      if (fill) gsap.set(fill, { scaleX: 0 });
-
-      const st = ScrollTrigger.create({
-        trigger: root,
-        pin,
-        start: "top top",
-        end: () => "+=" + distance(),
-        scrub: 1,
-        animation: tween,
-        invalidateOnRefresh: true,
-        onUpdate: (self) => {
-          setColor(self.progress);
-          if (fill) gsap.set(fill, { scaleX: self.progress });
-        },
-      });
-
-      return () => {
-        st.kill();
-        root.classList.remove("process--horizontal");
-        steps.forEach((s) => s.style.removeProperty("--c"));
-      };
+        return () => {
+          st.kill();
+          root.classList.remove("process--horizontal");
+          steps.forEach((s) => s.style.removeProperty("--c"));
+        };
+      }
 
       /** Mobil: Werkbank-Stapel. Ein einziger Scroll-Handler steuert alle Karten. */
       function setupStack() {
@@ -204,7 +209,10 @@ export function Process({ compact = false }: { compact?: boolean }) {
               return (
                 <li key={step.number} className="process-step" style={{ ["--i" as string]: i }}>
                   <div className="process-step-text">
-                    <p aria-hidden className="process-number font-display text-[clamp(5rem,4rem+6vw,11rem)] leading-[0.85] tracking-[-0.04em] text-accent [font-variation-settings:'opsz'_144,'SOFT'_100]">
+                    <p
+                      aria-hidden
+                      className="process-number font-display text-[clamp(5rem,4rem+6vw,11rem)] leading-[0.85] tracking-[-0.04em] text-accent [font-variation-settings:'opsz'_144,'SOFT'_100]"
+                    >
                       {step.number}
                     </p>
                     <h3 className="mt-6 text-h3">

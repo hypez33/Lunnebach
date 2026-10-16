@@ -98,7 +98,13 @@ export function HeroMotion({ children, className = "" }: { children: React.React
         gsap.to(parallax, {
           yPercent: MOBILE.heroParallax,
           ease: "none",
-          scrollTrigger: { trigger: root, start: 0, end: "bottom top", scrub: true },
+          scrollTrigger: {
+            trigger: root,
+            start: 0,
+            end: "bottom top",
+            scrub: true,
+            onToggle: (self) => void (parallax.style.willChange = self.isActive ? "transform" : ""),
+          },
         });
       }
     },

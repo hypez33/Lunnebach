@@ -58,8 +58,8 @@ src/
     motion/               gsap.ts (zentrale Registrierung, Plugins lazy), eases.ts, preference.ts, useMotion.ts
     forms/                Zod-Schemas, Server Actions
     og.tsx, jsonld.ts
-scripts/                  fetch-assets.mjs, build-image-manifest.mjs, contrast.mjs
-tests/                    a11y.spec.ts, keyboard.spec.ts
+scripts/                  fetch-assets.mjs, build-image-manifest.mjs, contrast.mjs, derive-logo.mjs
+tests/                    a11y.spec.ts, keyboard.spec.ts, mobile-motion.spec.ts (Geräte-Rundgang + Videos → qa/videos/)
 assets/fonts/             TTF-Schriften für OG-Bilder (OFL)
 ```
 

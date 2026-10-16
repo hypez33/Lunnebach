@@ -12,8 +12,7 @@ const CLIP_FROM: Record<string, string> = {
 };
 const CLIP_OPEN = "inset(0% 0% 0% 0%)";
 
-const nf = (decimals: number) =>
-  new Intl.NumberFormat("de-DE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+const nf = (decimals: number) => new Intl.NumberFormat("de-DE", { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
 
 /**
  * Globale, deklarative Scroll-Motion (Moment 2 + 5, Bild-Reveals, Touch-Gegenstücke zu Hover).
@@ -38,13 +37,16 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
   const scope = useRef<HTMLDivElement>(null);
 
   useMotion(
-    ({ reduce, isMobile, isTouch, gsap, ScrollTrigger, SplitText }) => {
+    ({ reduce, isMobile, isTouch, defer, gsap, ScrollTrigger, SplitText }) => {
       if (reduce) return;
       const root = scope.current;
       if (!root) return;
 
+      // Aufbau in mehreren Tasks (defer): Seiten-H1 sofort, alles unterhalb des Folds gestaffelt –
+      // so entsteht nach dem Laden kein langer Task (TBT), und Eingaben bleiben flüssig (INP).
+
       // Moment 5 – Headlines. Mobil kürzerer Weg und schneller (Hochformat, LCP)
-      root.querySelectorAll<HTMLElement>("[data-split]").forEach((el) => {
+      const splitHeadline = (el: HTMLElement) => {
         const immediate = el.dataset.split === "hero";
         if (!immediate && isInitiallyVisible(el)) return;
         let played = false;
@@ -72,7 +74,11 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
             });
           },
         });
-      });
+      };
+      const headlines = gsap.utils.toArray<HTMLElement>("[data-split]", root);
+      headlines.filter((el) => el.dataset.split === "hero").forEach(splitHeadline);
+      // je Headline ein Task – SplitText misst Zeilen (Layout), zusammen wäre das ein langer Task
+      headlines.filter((el) => el.dataset.split !== "hero").forEach((el) => defer(() => splitHeadline(el)));
 
       // Bild-Reveals (nie Fade von 0, sondern clip-path)
       const clipDuration = isMobile ? MOBILE.clip : DURATION.clip;
@@ -81,40 +87,48 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
         const media = el.querySelector("img");
         const tl = gsap.timeline({ paused: true });
         tl.fromTo(el, { clipPath: from }, { clipPath: CLIP_OPEN, duration: clipDuration, ease: EASE.reveal, clearProps: "clipPath" });
-        if (media) tl.fromTo(media, { scale: 1.12 }, { scale: 1, duration: clipDuration * 1.2, ease: EASE.reveal, clearProps: "transform" }, 0);
+        if (media)
+          tl.fromTo(media, { scale: 1.12 }, { scale: 1, duration: clipDuration * 1.2, ease: EASE.reveal, clearProps: "transform" }, 0);
         return tl;
       };
-      const clips = gsap.utils
-        .toArray<HTMLElement>("[data-clip]", root)
-        // Prozess mobil: der Werkbank-Stapel hat ein eigenes Reveal (Skizze → Farbe)
-        .filter((el) => !isInitiallyVisible(el) && !(isMobile && el.closest(".process")));
-      clips
-        .filter((el) => !el.closest("[data-clip-batch]"))
-        .forEach((el) => {
-          const tl = revealTl(el);
-          ScrollTrigger.create({ trigger: el, start: START.clip, once: true, onEnter: () => tl.play() });
-        });
-      // Gestaffelt: was gleichzeitig ins Bild kommt (z. B. eine Galeriezeile), öffnet sich nacheinander
-      const batched = clips.filter((el) => el.closest("[data-clip-batch]"));
-      if (batched.length) {
-        const tls = new Map(batched.map((el) => [el, revealTl(el)]));
-        ScrollTrigger.batch(batched, {
-          start: START.clip,
-          once: true,
-          onEnter: (els) =>
-            els.forEach((el, i) => {
-              const tl = tls.get(el as HTMLElement);
-              if (tl) gsap.delayedCall(i * 0.12, () => void tl.play());
-            }),
-        });
-      }
+      defer(() => {
+        const clips = gsap.utils
+          .toArray<HTMLElement>("[data-clip]", root)
+          // Prozess mobil: der Werkbank-Stapel hat ein eigenes Reveal (Skizze → Farbe)
+          .filter((el) => !isInitiallyVisible(el) && !(isMobile && el.closest(".process")));
+        clips
+          .filter((el) => !el.closest("[data-clip-batch]"))
+          .forEach((el) => {
+            const tl = revealTl(el);
+            ScrollTrigger.create({ trigger: el, start: START.clip, once: true, onEnter: () => tl.play() });
+          });
+        // Gestaffelt: was gleichzeitig ins Bild kommt (z. B. eine Galeriezeile), öffnet sich nacheinander
+        const batched = clips.filter((el) => el.closest("[data-clip-batch]"));
+        if (batched.length) {
+          const tls = new Map(batched.map((el) => [el, revealTl(el)]));
+          ScrollTrigger.batch(batched, {
+            start: START.clip,
+            once: true,
+            onEnter: (els) =>
+              els.forEach((el, i) => {
+                const tl = tls.get(el as HTMLElement);
+                if (tl) gsap.delayedCall(i * 0.12, () => void tl.play());
+              }),
+          });
+        }
+      });
 
       // Moment 2 – Maßketten
       const drawDimension = (el: HTMLElement, vars?: gsap.TimelineVars) => {
         const vertical = el.dataset.orientation === "vertical";
         const tl = gsap.timeline({ defaults: { ease: EASE.lunnebach }, ...vars });
         tl.fromTo(el.querySelectorAll(".dim-path"), { drawSVG: "50% 50%" }, { drawSVG: "0% 100%", duration: DURATION.dimension })
-          .fromTo(el.querySelectorAll(".dim-tick"), { scale: 0 }, { scale: 1, duration: 0.35, stagger: 0.05, ease: "back.out(2)" }, "-=0.35")
+          .fromTo(
+            el.querySelectorAll(".dim-tick"),
+            { scale: 0 },
+            { scale: 1, duration: 0.35, stagger: 0.05, ease: "back.out(2)" },
+            "-=0.35",
+          )
           .fromTo(
             el.querySelectorAll(".dim-label"),
             { autoAlpha: 0, [vertical ? "x" : "y"]: 8 },
@@ -123,80 +137,95 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
           );
         return tl;
       };
-      root.querySelectorAll<HTMLElement>("[data-dimension]").forEach((el) => {
-        if (el.dataset.dimension === "static") return;
-        drawDimension(el, { scrollTrigger: { trigger: el, start: START.dimension, once: true } });
-      });
+      defer(() =>
+        root.querySelectorAll<HTMLElement>("[data-dimension]").forEach((el) => {
+          if (el.dataset.dimension === "static") return;
+          drawDimension(el, { scrollTrigger: { trigger: el, start: START.dimension, once: true } });
+        }),
+      );
 
       // Zahlen zählen einmalig hoch – auch wenn sie beim Laden schon im Bild sind (dann sofort)
-      root.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
-        const to = Number(el.dataset.count);
-        if (!Number.isFinite(to)) return;
-        const decimals = Number(el.dataset.decimals ?? 0);
-        const fmt = nf(decimals);
-        const prefix = el.dataset.prefix ?? "";
-        const obj = { v: 0 };
-        el.textContent = prefix + fmt.format(0);
-        gsap.to(obj, {
-          v: to,
-          duration: DURATION.count,
-          ease: "power2.out",
-          scrollTrigger: { trigger: el, start: START.count, once: true },
-          onUpdate: () => {
-            el.textContent = prefix + fmt.format(obj.v);
-          },
-        });
-      });
-
-      if (isTouch) {
-        // „In-view active“: Hover-Zustand, solange das Element in der Bildmitte steht
-        root.querySelectorAll<HTMLElement>("[data-active-in-view]").forEach((el) => {
-          const dim = el.querySelector<HTMLElement>(".card-dim .dim");
-          const draw = dim ? drawDimension(dim, { paused: true }) : null;
-          ScrollTrigger.create({
-            trigger: el,
-            start: ACTIVE_ZONE.start,
-            end: ACTIVE_ZONE.end,
-            toggleClass: "is-active",
-            onToggle: (self) => {
-              if (!draw) return;
-              if (self.isActive) draw.timeScale(1).play();
-              else draw.timeScale(2.5).reverse();
+      defer(() =>
+        root.querySelectorAll<HTMLElement>("[data-count]").forEach((el) => {
+          const to = Number(el.dataset.count);
+          if (!Number.isFinite(to)) return;
+          const decimals = Number(el.dataset.decimals ?? 0);
+          const fmt = nf(decimals);
+          const prefix = el.dataset.prefix ?? "";
+          const obj = { v: 0 };
+          el.textContent = prefix + fmt.format(0);
+          gsap.to(obj, {
+            v: to,
+            duration: DURATION.count,
+            ease: "power2.out",
+            scrollTrigger: { trigger: el, start: START.count, once: true },
+            onUpdate: () => {
+              el.textContent = prefix + fmt.format(obj.v);
             },
+          });
+        }),
+      );
+
+      if (isTouch)
+        defer(() => {
+          // „In-view active“: Hover-Zustand, solange das Element in der Bildmitte steht
+          root.querySelectorAll<HTMLElement>("[data-active-in-view]").forEach((el) => {
+            const dim = el.querySelector<HTMLElement>(".card-dim .dim");
+            const draw = dim ? drawDimension(dim, { paused: true }) : null;
+            ScrollTrigger.create({
+              trigger: el,
+              start: ACTIVE_ZONE.start,
+              end: ACTIVE_ZONE.end,
+              toggleClass: "is-active",
+              onToggle: (self) => {
+                if (!draw) return;
+                if (self.isActive) draw.timeScale(1).play();
+                else draw.timeScale(2.5).reverse();
+              },
+            });
+          });
+
+          // Parallax im Rahmen: überdimensioniert (scale), damit keine Kante sichtbar wird
+          root.querySelectorAll<HTMLElement>("[data-parallax]").forEach((el) => {
+            const amount = Number(el.dataset.parallax) || MOBILE.cardParallax;
+            gsap.fromTo(
+              el,
+              { yPercent: -amount, scale: 1 + (amount * 2.4) / 100 },
+              {
+                yPercent: amount,
+                ease: "none",
+                scrollTrigger: {
+                trigger: el.parentElement ?? el,
+                start: "top bottom",
+                end: "bottom top",
+                scrub: true,
+                // eigene Ebene nur, solange sichtbar (kein Dauer-will-change)
+                onToggle: (self) => void (el.style.willChange = self.isActive ? "transform" : ""),
+              },
+              },
+            );
+          });
+
+          // Bildausschnitt öffnet sich proportional zum Scroll („an den Finger gekoppelt“)
+          root.querySelectorAll<HTMLElement>("[data-scrub-clip]").forEach((el) => {
+            gsap.fromTo(
+              el,
+              { clipPath: el.dataset.scrubClip || "inset(4% 4% 0% 4%)" },
+              {
+                clipPath: CLIP_OPEN,
+                ease: "none",
+                scrollTrigger: { trigger: el, start: "top 92%", end: "center 50%", scrub: true },
+              },
+            );
           });
         });
 
-        // Parallax im Rahmen: überdimensioniert (scale), damit keine Kante sichtbar wird
-        root.querySelectorAll<HTMLElement>("[data-parallax]").forEach((el) => {
-          const amount = Number(el.dataset.parallax) || MOBILE.cardParallax;
-          gsap.fromTo(
-            el,
-            { yPercent: -amount, scale: 1 + (amount * 2.4) / 100 },
-            {
-              yPercent: amount,
-              ease: "none",
-              scrollTrigger: { trigger: el.parentElement ?? el, start: "top bottom", end: "bottom top", scrub: true },
-            },
-          );
-        });
-
-        // Bildausschnitt öffnet sich proportional zum Scroll („an den Finger gekoppelt“)
-        root.querySelectorAll<HTMLElement>("[data-scrub-clip]").forEach((el) => {
-          gsap.fromTo(
-            el,
-            { clipPath: el.dataset.scrubClip || "inset(4% 4% 0% 4%)" },
-            {
-              clipPath: CLIP_OPEN,
-              ease: "none",
-              scrollTrigger: { trigger: el, start: "top 92%", end: "center 50%", scrub: true },
-            },
-          );
-        });
-      }
-
-      ScrollTrigger.sort();
-      const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-      return () => cancelAnimationFrame(raf);
+      // Zum Schluss einmal sortieren und messen (nach allen gestaffelten Gruppen)
+      defer(() => {
+        ScrollTrigger.sort();
+        const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
+        return () => cancelAnimationFrame(raf);
+      });
     },
     { scope },
   );
