@@ -54,8 +54,11 @@ export function Process({ compact = false }: { compact?: boolean }) {
         };
         setColor(0);
 
-        const tween = gsap.to(track, { x: () => -distance(), ease: "none" });
-        if (fill) gsap.set(fill, { scaleX: 0 });
+        // Strecke, Lineal-Füllung, Farben und Zähler hängen an DERSELBEN gedämpften Timeline (scrub: 1) –
+        // vorher folgte die Füllung dem rohen Scroll und lief der gedämpften Strecke ruckelnd voraus.
+        const tl = gsap.timeline({ defaults: { ease: "none" }, onUpdate: () => setColor(tl.progress()) });
+        tl.to(track, { x: () => -distance() }, 0);
+        if (fill) tl.fromTo(fill, { scaleX: 0 }, { scaleX: 1 }, 0);
 
         const st = ScrollTrigger.create({
           trigger: root,
@@ -63,12 +66,8 @@ export function Process({ compact = false }: { compact?: boolean }) {
           start: "top top",
           end: () => "+=" + distance(),
           scrub: 1,
-          animation: tween,
+          animation: tl,
           invalidateOnRefresh: true,
-          onUpdate: (self) => {
-            setColor(self.progress);
-            if (fill) gsap.set(fill, { scaleX: self.progress });
-          },
         });
 
         return () => {
@@ -99,7 +98,8 @@ export function Process({ compact = false }: { compact?: boolean }) {
           desat: gsap.quickSetter(s.querySelector(".process-desat"), "opacity"),
           sketch: gsap.quickSetter(s.querySelector(".process-sketch"), "opacity"),
         }));
-        const setFill = vfill ? gsap.quickSetter(vfill, "scaleY") : null;
+        // geglättet statt hart gesetzt: Wheel-/Touch-Scroll kommt in Sprüngen, das Lineal soll gleiten
+        const setFill = vfill ? gsap.quickTo(vfill, "scaleY", { duration: 0.45, ease: "power3.out" }) : null;
         const clamp = gsap.utils.clamp(0, 1);
 
         // Natürliche Lage der Karten (ohne Sticky-Versatz) aus dem Layout: Höhen + Abstand

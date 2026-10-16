@@ -25,6 +25,7 @@ const nf = (decimals: number) => new Intl.NumberFormat("de-DE", { minimumFractio
  *                           (Gegenstück zu :hover; Hover-Maßketten der Projektkarten zeichnen sich dabei)
  *  - [data-parallax]        Touch: Bild gleitet im Rahmen (scrub, yPercent ±Wert)
  *  - [data-scrub-clip]      Touch: Bildausschnitt öffnet sich an den Scroll gekoppelt (Startwert = Attribut)
+ *  - [data-mark]            Schlüsselwort in einer Überschrift wird mit Bleistiftstrich angerissen
  * Ohne JS bzw. bei reduzierter Bewegung bleibt alles statisch sichtbar.
  *
  * Wichtig: umschließt den Inhalt JEDER Seite (nicht im Layout):
@@ -219,6 +220,16 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
             );
           });
         });
+
+      // Bleistift-Anriss unter einem Schlüsselwort ([data-mark]) – Klasse an der Überschrift, nicht am Wort,
+      // weil SplitText die Wort-Spans beim Neuaufteilen ersetzt
+      defer(() =>
+        root.querySelectorAll<HTMLElement>("[data-mark]").forEach((mark) => {
+          const heading = mark.closest<HTMLElement>("h1, h2, h3") ?? mark;
+          if (isInitiallyVisible(heading)) return void heading.classList.add("is-marked");
+          ScrollTrigger.create({ trigger: heading, start: "top 72%", once: true, onEnter: () => heading.classList.add("is-marked") });
+        }),
+      );
 
       // Zum Schluss einmal sortieren und messen (nach allen gestaffelten Gruppen)
       defer(() => {

@@ -1059,3 +1059,295 @@ html[data-menu-open] .site-header {
     100% 5px;
   background-repeat: no-repeat;
 }
+
+/* ------------------------------------------------------------------
+   Bleistift-Anriss unter einem Schlüsselwort (<Marked>, [data-mark])
+   ------------------------------------------------------------------ */
+[data-mark] {
+  position: relative;
+  isolation: isolate;
+  white-space: nowrap;
+}
+[data-mark]::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: -0.06em;
+  right: -0.08em;
+  bottom: 0.04em;
+  height: 0.3em;
+  background: no-repeat center / 100% 100%
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'%3E%3Cpath d='M3 9.5C38 5 74 8.8 108 6.6S170 4.2 197 7.4' fill='none' stroke='%23E46929' stroke-width='5' stroke-linecap='round'/%3E%3Cpath d='M14 11.6C60 9.4 120 10.8 186 9.6' fill='none' stroke='%23E46929' stroke-width='2' stroke-linecap='round' opacity='.55'/%3E%3C/svg%3E");
+}
+@media (prefers-reduced-motion: no-preference) {
+  .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-mark]::after {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.85s var(--ease-lunnebach) 0.45s;
+  }
+  .js:not([data-motion="reduced"]):not(.motion-failsafe) .is-marked [data-mark]::after {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+/* ------------------------------------------------------------------
+   Haltung: Wasserwaage + Werte am Maßstab
+   ------------------------------------------------------------------ */
+.level {
+  width: min(100%, 24rem);
+}
+.level-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  height: 3rem;
+  padding-inline: 0.5rem;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #2c2724, var(--color-ink) 55%, #120f0d);
+  box-shadow: 0 10px 24px -14px rgb(28 25 22 / 0.6);
+  transform-origin: 50% 50%;
+}
+.level-cap {
+  width: 1.25rem;
+  height: 1.75rem;
+  border-radius: 3px;
+  background: var(--color-accent);
+}
+.level-vial {
+  position: relative;
+  flex: 0 1 11rem;
+  height: 1.375rem;
+  border-radius: 999px;
+  overflow: hidden;
+  background: linear-gradient(180deg, #efe4b8, #dccb8c 60%, #cdb978);
+  box-shadow: inset 0 2px 4px rgb(0 0 0 / 0.35);
+}
+.level-lines {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 3.1rem;
+  border-inline: 1.5px solid rgb(28 25 22 / 0.75);
+}
+.level-bubble {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.4rem;
+  height: 0.95rem;
+  margin: -0.475rem 0 0 -1.2rem;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at 40% 35%, #fffdf2, #f4ecc8 55%, #e3d49c);
+  box-shadow: 0 0 0 1px rgb(28 25 22 / 0.18);
+}
+.level-readout {
+  margin-top: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+.level.is-plumb .level-state {
+  color: var(--color-accent-text);
+}
+
+.value-list {
+  padding-left: clamp(1.75rem, 3vw, 3rem);
+}
+/* Maßstab mit Millimeter-Teilung an der linken Kante */
+.value-scale {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0.875rem;
+  border-left: 1px solid var(--color-line-strong);
+  background-image:
+    repeating-linear-gradient(to bottom, var(--color-ink) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(to bottom, var(--color-line-strong) 0 1px, transparent 1px 12px);
+  background-size:
+    100% 100%,
+    55% 100%;
+  background-repeat: no-repeat;
+}
+/* Anschlag: gleitet zum aktiven Wert (Höhe per scaleY, Basis 100px) */
+.value-marker {
+  display: none;
+  position: absolute;
+  left: -2px;
+  top: 0;
+  width: 4px;
+  height: 100px;
+  background: var(--color-accent);
+  transform-origin: 50% 0;
+  opacity: 0;
+}
+.values--live .value-marker {
+  display: block;
+}
+.value-row {
+  padding-block: clamp(1.5rem, 3vw, 2.75rem);
+  border-bottom: 1px solid var(--color-line);
+}
+.value-row:first-child {
+  padding-top: 0.5rem;
+}
+.value-title {
+  font-size: clamp(1.875rem, 1.25rem + 2.4vw, 3.5rem);
+  line-height: 1.06;
+  transition:
+    color 0.5s var(--ease-lunnebach),
+    translate 0.6s var(--ease-lunnebach);
+}
+.value-text {
+  margin-top: 0.75rem;
+  max-width: 44ch;
+  color: var(--color-ink-muted);
+}
+/* Live: nur der aktive Wert steht in voller Stärke (inaktiv weiterhin ≥ 4,5:1) */
+.values--live .value-title {
+  color: var(--color-ink-muted);
+}
+.values--live .value-row.is-current .value-title {
+  color: var(--color-ink);
+  translate: 0.5rem 0;
+}
+
+/* ------------------------------------------------------------------
+   Anfrage: Maßband
+   ------------------------------------------------------------------ */
+.tape {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding-top: 1.75rem;
+}
+.tape-case {
+  position: relative;
+  z-index: 1;
+  flex: none;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 12px;
+  background: linear-gradient(145deg, #2c2724, var(--color-ink));
+  box-shadow: 0 10px 20px -12px rgb(28 25 22 / 0.6);
+}
+.tape-screw {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: var(--color-accent);
+  box-shadow: inset 0 0 0 3px rgb(28 25 22 / 0.35);
+}
+.tape-track {
+  position: relative;
+  flex: 1;
+  height: 1.375rem;
+}
+.tape-band {
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-accent);
+  background-image:
+    repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px 50px),
+    repeating-linear-gradient(to right, var(--color-ink) 0 1px, transparent 1px 10px);
+  background-size:
+    100% 70%,
+    100% 35%;
+  background-repeat: no-repeat;
+  border-radius: 0 2px 2px 0;
+}
+.tape-end {
+  position: absolute;
+  top: 0;
+  left: 100%;
+  height: 100%;
+}
+.tape--live .tape-end {
+  left: 0;
+}
+.tape-hook {
+  position: absolute;
+  left: -3px;
+  top: -0.375rem;
+  width: 4px;
+  height: calc(100% + 0.75rem);
+  border-radius: 1px;
+  background: var(--color-ink);
+}
+.tape-readout {
+  position: absolute;
+  bottom: calc(100% + 0.625rem);
+  left: 0;
+  translate: -50% 0;
+  white-space: nowrap;
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+/* rechts nicht über den Rand hinausragen */
+.tape:not(.tape--live) .tape-readout {
+  translate: -100% 0;
+}
+
+/* ------------------------------------------------------------------
+   Cabinet: Schiebetürflügel über dem Bild
+   ------------------------------------------------------------------ */
+.cabinet-doors {
+  display: none;
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+.cabinet-doors.is-live {
+  display: block;
+}
+.cabinet-leaf {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background:
+    linear-gradient(112deg, rgb(255 255 255 / 0.5) 0 18%, transparent 18% 26%, rgb(255 255 255 / 0.22) 26% 30%, transparent 30%),
+    linear-gradient(180deg, #e9e3d9, #d9d0c3);
+  box-shadow: inset 0 0 0 1px rgb(28 25 22 / 0.12);
+}
+.cabinet-leaf--a {
+  left: 0;
+  border-right: 1px solid rgb(28 25 22 / 0.25);
+}
+.cabinet-leaf--b {
+  right: 0;
+}
+.cabinet-handle {
+  position: absolute;
+  top: 50%;
+  height: 26%;
+  width: 4px;
+  translate: 0 -50%;
+  border-radius: 2px;
+  background: var(--color-ink);
+}
+.cabinet-leaf--a .cabinet-handle {
+  right: 0.875rem;
+}
+.cabinet-leaf--b .cabinet-handle {
+  left: 0.875rem;
+}
+.cabinet-tag {
+  position: absolute;
+  bottom: 0.875rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  color: var(--color-ink);
+}
+.cabinet-leaf--a .cabinet-tag {
+  left: 0.875rem;
+}
+.cabinet-leaf--b .cabinet-tag {
+  right: 0.875rem;
+}

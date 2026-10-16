@@ -53,9 +53,10 @@ export const home = {
       { value: 0.1, decimals: 1, suffix: " mm", label: "CNC-Genauigkeit", placeholder: true },
     ],
   },
-  values: { eyebrow: "Haltung", title: "Woran wir uns messen lassen." },
+  values: { eyebrow: "Haltung", title: "Woran wir uns messen lassen.", mark: "messen" },
   career: {
     title: "Arbeite da, wo Unikate entstehen.",
+    mark: "Unikate",
     text: "Wir gehören zu den Top-Arbeitgebern im Handwerk. Bei uns baust du keine Serie, sondern Projekte, die es nur einmal gibt – mit moderner CNC-Technik und echter Handarbeit.",
     cta: "Offene Stellen",
   },
@@ -66,6 +67,7 @@ export const home = {
   },
   inquiry: {
     title: "Erzählen Sie uns von Ihrem Raum.",
+    mark: "Raum",
     text: "Ein paar Angaben genügen. Wir melden uns innerhalb von zwei Werktagen und vereinbaren ein unverbindliches Gespräch.",
     cta: "Projekt anfragen",
   },

@@ -1,6 +1,8 @@
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { MapEmbed } from "@/components/ui/MapEmbed";
+import { Marked } from "@/components/ui/Marked";
+import { TapeMeasure } from "@/components/ui/TapeMeasure";
 import { home } from "@/content/pages";
 import { site } from "@/content/site";
 
@@ -9,12 +11,14 @@ export function InquiryCta({ showMap = true }: { showMap?: boolean }) {
   return (
     <section aria-labelledby="inquiry-title" className="section-y border-t border-line bg-paper-2">
       <div className="container-site grid-12 gap-y-14">
+        {/* Maßband: zieht sich beim Hereinscrollen heraus, auf Desktop folgt es der Maus („Maß nehmen“) */}
+        <TapeMeasure className="col-span-4 md:col-span-8 lg:col-span-12" />
         <div className="col-span-4 md:col-span-8 lg:col-span-5">
           <Eyebrow className="text-ink-muted">
             Anfrage &amp; Anfahrt
           </Eyebrow>
           <h2 id="inquiry-title" data-split className="mt-6 text-h2">
-            {q.title}
+            <Marked text={q.title} mark={q.mark} />
           </h2>
           <p className="mt-6 max-w-[46ch] text-lead text-ink-muted">{q.text}</p>
           <div className="mt-10 flex flex-col items-start gap-5">

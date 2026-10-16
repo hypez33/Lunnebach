@@ -1,6 +1,7 @@
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Dimension } from "@/components/ui/Dimension";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { CabinetDoors } from "@/components/ui/CabinetDoors";
 import { Figure } from "@/components/ui/Figure";
 import { img } from "@/content/images";
 import { home } from "@/content/pages";
@@ -8,7 +9,7 @@ import { site } from "@/content/site";
 
 const door = img("privat/wohnen/spiegel-schrankwand-schlafzimmer");
 
-/** Schwestermarke Cabinet – Bild öffnet sich wie eine Schiebetür (clip „door“). */
+/** Schwestermarke Cabinet – zwei Schiebetürflügel gleiten an den Scroll gekoppelt auf und geben das Bild frei. */
 export function CabinetTeaser() {
   const c = home.cabinet;
   return (
@@ -19,7 +20,9 @@ export function CabinetTeaser() {
             <div className="absolute inset-x-0 top-0">
               <Dimension label="Schiebetür · 2 × 1 200" />
             </div>
-            <Figure image={door} sizes="(min-width: 1024px) 600px, 100vw" reveal="door" />
+            <Figure image={door} sizes="(min-width: 1024px) 600px, 100vw" reveal={false}>
+              <CabinetDoors />
+            </Figure>
           </div>
         </div>
         <div className="col-span-4 md:col-span-3 lg:col-span-5 lg:col-start-8">

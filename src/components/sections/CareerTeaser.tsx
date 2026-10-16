@@ -2,6 +2,7 @@ import Image from "next/image";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Figure } from "@/components/ui/Figure";
+import { Marked } from "@/components/ui/Marked";
 import { img } from "@/content/images";
 import { home } from "@/content/pages";
 
@@ -19,7 +20,7 @@ export function CareerTeaser() {
             Karriere
           </Eyebrow>
           <h2 id="career-title" data-split className="mt-6 text-h2">
-            {c.title}
+            <Marked text={c.title} mark={c.mark} />
           </h2>
           <p className="mt-6 max-w-[52ch] text-lead text-paper-muted">{c.text}</p>
           <div className="mt-10 flex flex-wrap items-center gap-8">
