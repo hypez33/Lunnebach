@@ -26,11 +26,11 @@ export const metadata: Metadata = {
 const groupPhoto = img("team/team-lunnebach");
 const siegel = img("brand/siegel");
 
-// [PLATZHALTER] Maschinenpark – Angaben und Fotos folgen
+// [PLATZHALTER] Maschinenpark – Beispielangaben, Modelle und Fotos folgen (TODO-CONTENT.md)
 const machines = [
-  { name: "CNC-Bearbeitungszentrum", note: "[Modell]", dim: "B 5 200" },
-  { name: "Formatkreissäge", note: "[Modell]", dim: "L 3 200" },
-  { name: "Kantenanleimmaschine", note: "[Modell]", dim: "L 6 800" },
+  { name: "CNC-Bearbeitungszentrum", note: "5-Achs-Bearbeitung", dim: "B 5 200" },
+  { name: "Formatkreissäge", note: "Zuschnitt", dim: "L 3 200" },
+  { name: "Kantenanleimmaschine", note: "Kante & Fuge", dim: "L 6 800" },
   { name: "Bankraum & Oberflächen", note: "Handarbeit", dim: "8 Bänke" },
 ];
 
@@ -76,8 +76,9 @@ export default function WerkstattPage() {
             {team.map((m, i) => (
               <li key={m.id} className={i % 2 === 1 ? "lg:mt-12" : ""}>
                 <Figure image={img(m.image)} sizes="(min-width: 1024px) 220px, 50vw" reveal="up" aspect="3 / 4" />
-                <p className="mt-3 font-medium">{m.name}</p>
-                <p className="mono text-[0.8125rem] text-ink-muted">{m.role}</p>
+                {/* Namen erst mit Einwilligung der Abgebildeten (TODO-CONTENT.md) */}
+                {!m.placeholder && <p className="mt-3 font-medium">{m.name}</p>}
+                <p className={`mono text-[0.8125rem] text-ink-muted ${m.placeholder ? "mt-3" : ""}`}>{m.role}</p>
               </li>
             ))}
           </ul>

@@ -52,7 +52,7 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
     { label: "Kategorie", value: `${worldLabel[project.world]} · ${project.category}` },
     { label: "Ort", value: project.location },
     { label: "Leistungen", value: project.services.join(", ") },
-    { label: "Jahr", value: project.year },
+    ...(project.year ? [{ label: "Jahr", value: project.year }] : []),
   ];
 
   const story = [
@@ -161,7 +161,7 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
           </div>
         </section>
 
-        {project.quote && (
+        {project.quote?.approved === true && (
           <section aria-label="Kundenstimme" data-theme="dark" className="theme-dark section-y">
             <figure className="container-site">
               <blockquote>

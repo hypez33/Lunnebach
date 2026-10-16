@@ -14,13 +14,15 @@ export type Project = {
   /** z. B. „Freizeit“, „Küche“ – zweiter Teil der Kategorie */
   category: string;
   location: string;
-  year: string;
+  /** Fertigstellung – nur angeben, wenn bestätigt (sonst wird die Zeile nicht angezeigt) */
+  year?: string;
   services: string[];
   teaser: string;
   heroImage: ImageId;
   gallery: { image: ImageId; caption?: string }[];
   story: { task: string; solution: string; result: string };
-  quote?: { text: string; author: string };
+  /** Kundenstimme – wird nur mit approved: true gerendert */
+  quote?: { text: string; author: string; approved: boolean };
   /** Illustrative Maßkette am Hero-Bild (Werte nicht verbindlich, s. TODO-CONTENT.md) */
   dimension: { label: string; orientation: "horizontal" | "vertical" };
   featured?: boolean;

@@ -1,8 +1,10 @@
 import Image from "next/image";
 import { img } from "@/content/images";
 
-const dark = img("brand/logo-2"); // dunkle Schrift → für hellen Grund
-const light = img("brand/logo-weiss-orange"); // helle Schrift → für dunklen Grund
+const light = img("brand/logo-weiss-orange"); // helle Schrift → für dunklen Grund (300 × 69, größte verfügbare PNG)
+// Dunkle Schrift → für hellen Grund. Abgeleitet aus der 300-px-Variante (scripts/derive-logo.mjs),
+// weil das Original logo-2.png nur 200 × 46 px hat und auf Retina unscharf wird.
+const dark = { ...light, src: "/images/brand/logo-dunkel.png", alt: img("brand/logo-2").alt };
 
 /**
  * Logo als PNG (SVG angefordert, siehe TODO-CONTENT.md).

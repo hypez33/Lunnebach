@@ -5,12 +5,15 @@ Inhalte liegen in `src/content/*.ts` (später Payload CMS).
 
 ## 1. Marke & Logo
 
-- [ ] **Logo als SVG anfordern.** Derzeit nur PNG (`logo-2.png` 200 × 46, `logo-weiss-orange.png` 300 × 69) – auf Retina-Displays leicht unscharf. Zwei Varianten (hell/dunkel) werden per CSS umgeschaltet.
+- [ ] **PRIORITÄT HOCH – Logo als SVG anfordern.** Auf der alten Website gibt es nur PNGs: `logo-weiss-orange.png` (300 × 69, größte verfügbare Datei) und `logo-2.png` (200 × 46). Übergangslösung: Die dunkle Variante wird aus der 300-px-Datei abgeleitet (`scripts/derive-logo.mjs` → `logo-dunkel.png`) – schärfer als das 200-px-Original, auf Retina (Header-Höhe 36 px ≙ 156 px Breite × 2–3) aber weiterhin nicht scharf. Zwei Varianten (hell/dunkel) werden per CSS umgeschaltet.
 - [ ] Signet „Rolf Lunnebach“ mit Werkzeugsymbolen ebenfalls als SVG (`rolf_lunnebach_weiss.png`).
 - [ ] Akzentfarbe `#E46929` wurde per Pixelanalyse aus dem Logo ermittelt – mit Hausfarbe/Druckvorlage abgleichen.
 - [ ] Siegel „Top Arbeitgeber“ (ZuFa ’18 Check): Gültigkeit/Jahr prüfen, ggf. aktuelles Siegel liefern.
 
 ## 2. Texte und Fakten (Platzhalter)
+
+Sichtbare eckige Klammern gibt es in der Demo nur noch in den Rechtstexten (bewusst, dort Pflicht zur Prüfung).
+Alle übrigen Stellen tragen plausible, im Code als **Beispiel** markierte Formulierungen – hier vollständig gelistet.
 
 | Stelle | Datei | Platzhalter |
 |---|---|---|
@@ -19,13 +22,15 @@ Inhalte liegen in `src/content/*.ts` (später Payload CMS).
 | Geo-Koordinaten Alemannenstraße 21 (Karte, JSON-LD) | `src/content/site.ts` | näherungsweise, exakt ermitteln |
 | Zahl „0,1 mm CNC-Genauigkeit“ | `src/content/pages.ts` | Wert prüfen |
 | „~30 Jahre“, „~10 Menschen“ | `src/content/pages.ts` | Stand prüfen |
-| Emser Therme – Ergebnis „[PLATZHALTER: Umfang, Jahr]“, Jahr | `src/content/projects.ts` | ergänzen |
-| Friseursalon – Kundenname, Kundenzitat, Jahr | `src/content/projects.ts` | **nur nach Freigabe** des Kunden |
+| Emser Therme – Ergebnis „Umgesetzt in mehreren Bauabschnitten – bei laufendem Thermenbetrieb.“ | `src/content/projects.ts` | **Beispieltext** – Umfang/Jahr bestätigen |
+| Friseursalon – Ergebnis „Termingerecht übergeben – zur Eröffnung stand jedes Möbel an seinem Platz.“ | `src/content/projects.ts` | **Beispieltext** – bestätigen |
+| Friseursalon – Kundenzitat (Beispiel, `quote.approved: false` → **wird nicht angezeigt**) | `src/content/projects.ts` | echtes Zitat + Name **nur nach Freigabe** des Kunden, dann `approved: true` |
 | Projekte Küche, Bibliothek, Büro, Schrankwand, Bad, Garten – Story (Aufgabe/Lösung/Ergebnis) | `src/content/projects.ts` | im Ton geschrieben, **inhaltlich erfunden** – durch echte Projektdaten ersetzen |
-| Ort `[Ort]` und Jahr `[Jahr]` aller Projekte | `src/content/projects.ts` | ergänzen |
-| Teamnamen und Rollen `[Name]`, `[Rolle]` | `src/content/team.ts` | ergänzen + **Einwilligung der abgebildeten Personen** |
-| Ausbildungsstart „[jährlich, 1. August]“ | `src/app/karriere/page.tsx` | prüfen |
-| Maschinenpark (Modelle, Fotos, Maße) | `src/app/werkstatt/page.tsx` | komplett Platzhalter, Fotos folgen |
+| Ort der Privatprojekte – derzeit **Beispiel „Raum Koblenz“** (Küche, Bibliothek, Büro, Schrankwand, Bad, Garten) | `src/content/projects.ts` | prüfen/ergänzen |
+| Jahr aller Projekte – Feld `year` fehlt, die Zeile „Jahr“ wird dann **nicht angezeigt** | `src/content/projects.ts` | ergänzen |
+| Teamnamen – Namen werden bei `placeholder: true` **nicht angezeigt**, nur Rollen; „Team Planung“ ist ein Beispiel | `src/content/team.ts` | Namen/Rollen + **Einwilligung der abgebildeten Personen**, dann `placeholder: false` |
+| Ausbildungsstart „jedes Jahr zum 1. August“ (Beispiel) | `src/app/karriere/page.tsx` | prüfen |
+| Maschinenpark – Beschreibungen „5-Achs-Bearbeitung“, „Zuschnitt“, „Kante & Fuge“ sind **Beispiele**, Modelle/Fotos/Maße fehlen | `src/app/werkstatt/page.tsx` | Fotos folgen, Angaben prüfen |
 | Videoinhalt „Einblick in die Werkstatt“ (YouTube `RBPyLdsKxfs`) | `Workshop.tsx`, `werkstatt/page.tsx` | Titel/Inhalt des Videos bestätigen, Untertitel ergänzen |
 | Impressum: Kammer, Handwerksrolle, USt-IdNr., Bildnachweis | `src/app/impressum/page.tsx` | **rechtlich prüfen** |
 | Datenschutzerklärung (Hoster, Speicherdauer, Übertragungsweg) | `src/app/datenschutz/page.tsx` | Muster – **rechtlich prüfen** |

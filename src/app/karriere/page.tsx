@@ -147,7 +147,7 @@ export default function KarrierePage() {
               {[
                 ["Dauer", "3 Jahre"],
                 ["Form", "dual"],
-                ["Start", "[jährlich, 1. August]"],
+                ["Start", "jedes Jahr zum 1. August"],
               ].map(([k, v]) => (
                 <div key={k} className="border-r border-line-dark py-4 pr-4 last:border-r-0 [&:not(:first-child)]:pl-4">
                   <dt className="uppercase tracking-[0.1em] text-paper-muted">{k}</dt>

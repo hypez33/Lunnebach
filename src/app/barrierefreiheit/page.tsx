@@ -48,7 +48,7 @@ export default function BarrierefreiheitPage() {
           body: (
             <ul className="grid list-disc gap-2 pl-5">
               <li>Die Alternativtexte der Bilder sind vorläufig und werden redaktionell geprüft.</li>
-              <li>Das Video verfügt noch nicht über Untertitel. [Untertitel ergänzen]</li>
+              <li>Das Video verfügt noch nicht über Untertitel; sie werden ergänzt.</li>
               <li>Das Logo liegt derzeit nur als Rastergrafik vor.</li>
             </ul>
           ),
