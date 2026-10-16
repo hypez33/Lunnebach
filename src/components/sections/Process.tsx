@@ -132,11 +132,12 @@ export function Process({ compact = false }: { compact?: boolean }) {
             if (y >= stuckAt - 2) count = i + 1;
             // Wird von der nächsten Karte überdeckt → zurücktreten
             if (i < n - 1) {
-              const nextEnter = natural[i + 1] - vh;
+              // erst auf dem letzten Stück, bevor die nächste Karte einrastet (nicht schon beim Eintritt unten)
+              const nextEnter = natural[i + 1] - tops[i + 1] - vh * 0.4;
               const nextStuck = natural[i + 1] - tops[i + 1];
               const p = clamp((y - nextEnter) / Math.max(1, nextStuck - nextEnter));
-              setters[i].scale(1 - 0.06 * p);
-              setters[i].shade(0.42 * p);
+              setters[i].scale(1 - 0.05 * p);
+              setters[i].shade(0.14 * p);
             }
           });
           const first = natural[0] - tops[0];
