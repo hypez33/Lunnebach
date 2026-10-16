@@ -28,7 +28,7 @@ export function HeroMotion({ children, className = "" }: { children: React.React
 
       const line = root.querySelectorAll("[data-hero-line] path");
       const door = root.querySelector<HTMLElement>("[data-hero-door]");
-      const doorImg = door?.querySelector("img");
+      const doorImg = door?.querySelector("[data-hero-image]");
       const title = root.querySelector<HTMLElement>("[data-hero-title]");
       const dims = root.querySelectorAll<HTMLElement>("[data-hero-dim]");
       const fades = root.querySelectorAll<HTMLElement>("[data-hero-fade]");
