@@ -1879,8 +1879,8 @@ html[data-menu-open] .site-header {
   cursor: zoom-in;
 }
 .bp--scan .bp {
-  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
-  mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 18%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+  mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 18%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
 }
 .bp--scan .bp-scanline {
   display: block;
