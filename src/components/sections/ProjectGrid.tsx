@@ -104,7 +104,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
         </p>
       </div>
 
-      <ul ref={grid} className="grid-12 mt-[clamp(3rem,6vw,6rem)] gap-y-[clamp(3.5rem,7vw,7rem)]">
+      <ul ref={grid} className="grid-12 mt-[clamp(1.75rem,4vw,4rem)] gap-y-[clamp(3.5rem,7vw,7rem)]">
         {projects.map((project) => {
           const pos = order.get(project.slug);
           const shown = pos !== undefined;

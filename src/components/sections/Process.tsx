@@ -137,7 +137,7 @@ export function Process({ compact = false }: { compact?: boolean }) {
               const nextStuck = natural[i + 1] - tops[i + 1];
               const p = clamp((y - nextEnter) / Math.max(1, nextStuck - nextEnter));
               setters[i].scale(1 - 0.05 * p);
-              setters[i].shade(0.14 * p);
+              setters[i].shade(0.9 * p);
             }
           });
           const first = natural[0] - tops[0];

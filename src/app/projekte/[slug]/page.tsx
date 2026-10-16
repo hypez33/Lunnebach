@@ -121,11 +121,14 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
             </div>
 
             {/* Meta-Leiste */}
-            <dl className="mono mt-[clamp(2.5rem,5vw,4rem)] grid grid-cols-2 border-t border-line-strong text-[0.8125rem] md:grid-cols-4">
+            <dl className="mono mt-8 grid border-l-2 border-accent bg-paper-2 px-4 text-[0.8125rem] md:mt-[clamp(2.5rem,5vw,4rem)] md:grid-cols-4 md:border-l-0 md:border-t md:border-line-strong md:bg-transparent md:px-0">
               {meta.map((m) => (
-                <div key={m.label} className="border-b border-line py-4 pr-4 md:border-b-0 md:border-r md:px-5 md:first:pl-0 md:last:border-r-0">
+                <div
+                  key={m.label}
+                  className="grid grid-cols-[6.5rem_minmax(0,1fr)] gap-3 border-b border-line py-3 last:border-b-0 md:block md:border-b-0 md:border-r md:px-5 md:py-4 md:first:pl-0 md:last:border-r-0"
+                >
                   <dt className="uppercase tracking-[0.1em] text-ink-muted">{m.label}</dt>
-                  <dd className="mt-1.5 text-ink">{m.value}</dd>
+                  <dd className="text-ink md:mt-1.5">{m.value}</dd>
                 </div>
               ))}
             </dl>

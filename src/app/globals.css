@@ -900,6 +900,9 @@ html[data-menu-open] .site-header {
 .process--stack .process-step {
   position: sticky;
   top: calc(var(--header-h) + 1rem + var(--i) * 0.75rem);
+  /* jede Karte füllt den Bildschirm → immer nur eine Karte lesbar, die nächste liegt darunter */
+  min-height: calc(100svh - var(--header-h) - 2.5rem - var(--i) * 0.75rem);
+  align-content: space-between;
   gap: 1rem;
   padding: 1.125rem;
   border: 1px solid var(--color-line-strong);
@@ -939,7 +942,8 @@ html[data-menu-open] .site-header {
   display: block;
   position: absolute;
   inset: 0;
-  background: var(--color-ink);
+  /* verdeckte Karte blendet in Papier aus (kein Grauschleier) */
+  background: var(--color-paper);
   opacity: 0;
   pointer-events: none;
 }

@@ -18,9 +18,10 @@ export default function ProjectsPage() {
       <PageHeader
         eyebrow="Projekte"
         title="Arbeiten, die es nur einmal gibt."
+        compact
         intro="Jedes Projekt beginnt mit einem Gespräch und endet mit einem Raum, der funktioniert. Eine Auswahl aus Wohnräumen und Objekteinrichtung."
       />
-      <section aria-label="Projektübersicht" className="section-y pt-[clamp(2.5rem,5vw,4rem)]">
+      <section aria-label="Projektübersicht" className="section-y pt-[clamp(1.25rem,3vw,2.5rem)]">
         <div className="container-site">
           <ProjectGrid projects={projects} />
         </div>
