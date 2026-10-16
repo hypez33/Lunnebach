@@ -1688,3 +1688,53 @@ html[data-menu-open] .site-header {
 .unique--live .unique-item.is-done .unique-label {
   color: var(--color-ink);
 }
+
+/* ------------------------------------------------------------------
+   Mobil-Feinschliff der Runde-3-Elemente
+   ------------------------------------------------------------------ */
+@media (max-width: 767px) {
+  /* Werkstück-Schritte: schmalere Ziffernspalte */
+  .build-steps > li {
+    grid-template-columns: 2.75rem minmax(0, 1fr);
+    gap: 0.75rem;
+    padding-left: 0.75rem;
+  }
+  .build-step-no {
+    font-size: 2rem;
+  }
+  /* Haltung: Waage über volle Breite, Werte kompakter */
+  .level {
+    width: 100%;
+  }
+  .value-list {
+    padding-left: 1.5rem;
+  }
+  .value-title {
+    font-size: clamp(1.625rem, 1.2rem + 2.2vw, 2.25rem);
+  }
+  /* Maßband: kleineres Gehäuse, mehr Band */
+  .tape-case {
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 10px;
+  }
+  /* Bauzeitenplan: Zeilen dichter, Label und Partner-Kennung kompakt */
+  .schedule-row {
+    padding-block: 0.625rem;
+  }
+  .schedule-label {
+    font-size: 0.9375rem;
+  }
+  .schedule-readout {
+    width: 100%;
+    justify-content: space-between;
+  }
+  /* Detailblatt in voller Spaltenbreite */
+  .tool-card {
+    width: 100%;
+  }
+  /* Rohlinge: Labels kleiner, damit 3 Spalten passen */
+  .unique-label {
+    font-size: 0.75rem;
+  }
+}

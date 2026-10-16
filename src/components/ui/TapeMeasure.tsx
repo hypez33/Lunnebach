@@ -39,7 +39,7 @@ export function TapeMeasure({ className = "" }: { className?: string }) {
         render();
 
         const pull = gsap.to(state, {
-          p: 0.64,
+          p: canHover ? 0.64 : 0.86,
           ease: "power2.out",
           onUpdate: render,
           scrollTrigger: { trigger: el, start: "top 92%", end: "top 45%", scrub: 0.6 },

@@ -41,7 +41,7 @@ export function UniqueRow({ className = "" }: { className?: string }) {
           const tl = gsap.timeline({
             defaults: { ease: "power2.inOut" },
             // lange Strecke: die Verwandlung läuft, während die Reihe von unten bis ins obere Drittel wandert
-            scrollTrigger: { trigger: el, start: "top 92%", end: "top 18%", scrub: 0.6 },
+            scrollTrigger: { trigger: el, start: "top 68%", end: "top 8%", scrub: 0.6 },
           });
           let done = -1;
           const setCount = (n: number) => {
