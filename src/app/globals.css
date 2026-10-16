@@ -451,6 +451,12 @@ textarea.field-input {
   .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-hidden] {
     visibility: hidden;
   }
+  /* Mobil wartet der Hero-Text nicht auf JS (LCP): Headline steht, Subline + CTAs per CSS (siehe hero-rise) */
+  @media (max-width: 1023px) {
+    .js:not([data-motion="reduced"]):not(.motion-failsafe) :is([data-hero-title], [data-hero-fade]) {
+      visibility: visible;
+    }
+  }
   /* Schiebetür: Desktop von rechts, Hochformat von unten nach oben */
   .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-door] {
     clip-path: inset(100% 0 0 0);
@@ -459,6 +465,22 @@ textarea.field-input {
     .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-door] {
       clip-path: inset(0 0 0 100%);
     }
+  }
+}
+
+/* Hero mobil: Die Headline ist das LCP-Element und steht sofort (gemessen: jede Animation der Headline
+   verschob den Lighthouse-LCP um 1,5–1,9 s, siehe DECISIONS.md). Subline + CTAs steigen per CSS ab dem
+   ersten Paint auf – ohne auf JS zu warten. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    translate: 0 0.75rem;
+  }
+}
+@media (max-width: 1023px) and (prefers-reduced-motion: no-preference) {
+  html:not([data-motion="reduced"]) [data-hero-fade] {
+    animation: hero-rise 0.55s var(--ease-expo-out) both;
+    animation-delay: calc(250ms + var(--i, 0) * 90ms);
   }
 }
 

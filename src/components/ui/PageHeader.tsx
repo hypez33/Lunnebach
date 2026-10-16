@@ -10,7 +10,7 @@ type Props = {
   aside?: React.ReactNode;
 };
 
-/** Seitenkopf der Unterseiten: Eyebrow, H1 (zeilenweise beim Laden, Desktop), Intro. */
+/** Seitenkopf der Unterseiten: Eyebrow, H1 (zeilenweise beim Laden; mobil kürzer), Intro. */
 export function PageHeader({ eyebrow, number = "01", title, intro, children, aside }: Props) {
   return (
     <header className="relative overflow-hidden border-b border-line pt-[var(--header-h)]">

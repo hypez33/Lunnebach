@@ -36,13 +36,14 @@ export function Hero() {
         <div className="grid-12 mt-[clamp(2rem,4vw,3.5rem)] gap-y-14">
           <div className="col-span-4 md:col-span-8 lg:col-span-8 lg:pt-2">
             <h1 id="hero-title" data-hero-title data-hero-hidden className="text-display font-[360] tracking-[-0.03em] [font-variation-settings:'opsz'_144,'SOFT'_60]">
+              {/* Mobil sofort sichtbar (LCP-Element), Desktop zeilenweise per SplitText */}
               {h.titleLines[0]} <br className="hidden lg:block" />
               {h.titleLines[1]}
             </h1>
             <p data-hero-fade data-hero-hidden className="mt-8 max-w-[52ch] text-lead text-ink-muted">
               {h.subline}
             </p>
-            <div data-hero-fade data-hero-hidden className="mt-10 flex flex-wrap gap-3">
+            <div data-hero-fade data-hero-hidden className="mt-10 flex flex-wrap gap-3" style={{ ["--i" as string]: 1 }}>
               <ButtonLink href={h.ctaPrimary.href}>{h.ctaPrimary.label}</ButtonLink>
               <ButtonLink href={h.ctaSecondary.href} variant="secondary">
                 {h.ctaSecondary.label}
@@ -52,7 +53,7 @@ export function Hero() {
 
           <div className="relative col-span-4 md:col-span-6 md:col-start-2 lg:col-span-4 lg:col-start-9">
             <div className="relative ml-auto w-[min(100%,450px)] pl-10">
-              <div className="relative">
+              <div data-hero-parallax className="relative">
                 {/* Vertikale Maßkette: Höhe der Vitrine (illustrativ) */}
                 <div data-hero-dim data-hero-hidden data-orientation="vertical" className="absolute -left-10 bottom-0 top-0 w-[14px]">
                   <Dimension label="H 2 180" orientation="vertical" animate={false} side="end" />
@@ -71,7 +72,7 @@ export function Hero() {
                 <span aria-hidden>Nussbaum · Glas · LED</span>
               </p>
               {/* Detail-Ausschnitt als zweite Ebene, nur ab Tablet */}
-              <div data-hero-fade data-hero-hidden className="grain absolute -bottom-16 -right-4 hidden w-[38%] overflow-hidden border-[6px] border-paper bg-paper-2 md:block xl:-right-10">
+              <div data-hero-fade data-hero-hidden style={{ ["--i" as string]: 2 }} className="grain absolute -bottom-16 -right-4 hidden w-[38%] overflow-hidden border-[6px] border-paper bg-paper-2 md:block xl:-right-10">
                 <DetailImage />
               </div>
             </div>
