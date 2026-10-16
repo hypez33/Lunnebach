@@ -6,12 +6,12 @@ export function Intro() {
     <section aria-labelledby="intro-title" className="section-y border-t border-line">
       <div className="container-site grid-12 gap-y-16">
         <p className="eyebrow col-span-4 text-ink-muted md:col-span-2" aria-hidden>
-          02 — Lunnebach
+          Lunnebach
         </p>
         <h2
           id="intro-title"
           data-split
-          className="col-span-4 text-statement font-[340] tracking-[-0.025em] md:col-span-8 lg:col-span-9 lg:col-start-3 [font-variation-settings:'opsz'_144,'SOFT'_80]"
+          className="col-span-4 text-statement font-[420] tracking-[-0.025em] md:col-span-8 lg:col-span-9 lg:col-start-3 [font-variation-settings:'opsz'_144,'SOFT'_80]"
         >
           {statement}
         </h2>

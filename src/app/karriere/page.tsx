@@ -38,7 +38,7 @@ export default function KarrierePage() {
       <section aria-labelledby="benefits-title" className="section-y">
         <div className="container-site grid-12 gap-y-12">
           <div className="col-span-4 md:col-span-8 lg:col-span-5">
-            <Eyebrow number="02" className="text-ink-muted">
+            <Eyebrow className="text-ink-muted">
               Was dich erwartet
             </Eyebrow>
             <h2 id="benefits-title" data-split className="mt-6 text-h2">
@@ -67,7 +67,7 @@ export default function KarrierePage() {
       <section id="stellen" aria-labelledby="jobs-title" className="section-y scroll-mt-[var(--header-h)] border-t border-line">
         <div className="container-site">
           <div className="grid-12 gap-y-6">
-            <Eyebrow number="03" className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
+            <Eyebrow className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
               Offene Stellen
             </Eyebrow>
             <h2 id="jobs-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
@@ -133,7 +133,7 @@ export default function KarrierePage() {
       <section aria-labelledby="training-title" data-theme="dark" className="theme-dark section-y">
         <div className="container-site grid-12 items-center gap-y-12">
           <div className="col-span-4 md:col-span-8 lg:col-span-6">
-            <Eyebrow number="04" className="text-paper-muted">
+            <Eyebrow className="text-paper-muted">
               Ausbildung
             </Eyebrow>
             <h2 id="training-title" data-split className="mt-6 text-h2">

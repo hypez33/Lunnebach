@@ -16,7 +16,7 @@ export function Workshop() {
   return (
     <section aria-labelledby="workshop-title" data-theme="dark" className="theme-dark section-y relative overflow-hidden">
       <div className="container-site">
-        <Eyebrow as="h2" id="workshop-title" number="05" className="!font-mono !tracking-[0.12em] text-paper-muted">
+        <Eyebrow as="h2" id="workshop-title" className="!font-mono !tracking-[0.12em] text-paper-muted">
           {w.eyebrow}
         </Eyebrow>
 

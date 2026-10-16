@@ -7,7 +7,7 @@ export function ApplicationSection() {
     <section id="bewerbung" aria-labelledby="application-title" className="section-y scroll-mt-[var(--header-h)] bg-paper-2">
       <div className="container-site grid-12 gap-y-12">
         <div className="col-span-4 md:col-span-8 lg:col-span-4">
-          <Eyebrow number="05" className="text-ink-muted">
+          <Eyebrow className="text-ink-muted">
             Bewerbung
           </Eyebrow>
           <h2 id="application-title" data-split className="mt-6 text-h2">

@@ -8,7 +8,6 @@ import { Dimension } from "./Dimension";
 
 type Props = {
   project: Project;
-  index: number;
   sizes: string;
   aspect?: string;
   className?: string;
@@ -28,7 +27,6 @@ type Props = {
  */
 export function ProjectCard({
   project,
-  index,
   sizes,
   aspect,
   className = "",
@@ -73,8 +71,6 @@ export function ProjectCard({
       </div>
       <div className="mt-5 flex flex-col gap-2">
         <p className="mono flex flex-wrap gap-x-3 text-[0.75rem] uppercase tracking-[0.1em] text-ink-muted">
-          <span>Pos. {String(index + 1).padStart(2, "0")}</span>
-          <span aria-hidden>·</span>
           <span>
             {worldLabel[project.world]} · {project.category}
           </span>

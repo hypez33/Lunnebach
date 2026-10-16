@@ -183,7 +183,7 @@ export function Process({ compact = false }: { compact?: boolean }) {
         <div className="process-head container-site relative">
           <div className="grid-12 gap-y-6">
             <p className="eyebrow col-span-4 flex gap-3 text-ink-muted md:col-span-8 lg:col-span-3">
-              <span>{compact ? "Ablauf" : "04"}</span> <span aria-hidden>—</span> <span>Prozess</span>
+              {compact ? "Ablauf" : "Prozess"}
             </p>
             <h2 id="process-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
               {processHeadline}

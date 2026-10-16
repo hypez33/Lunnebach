@@ -119,7 +119,6 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
             >
               <ProjectCard
                 project={project}
-                index={projects.indexOf(project)}
                 sizes={slot.sizes}
                 aspect={slot.aspect}
                 reveal={false}

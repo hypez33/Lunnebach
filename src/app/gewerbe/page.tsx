@@ -37,7 +37,7 @@ export default function GewerbePage() {
       <section aria-labelledby="one-hand-title" data-theme="dark" className="theme-dark section-y">
         <div className="container-site">
           <div className="grid-12 gap-y-6">
-            <Eyebrow number="05" className="col-span-4 text-paper-muted md:col-span-8 lg:col-span-3">
+            <Eyebrow className="col-span-4 text-paper-muted md:col-span-8 lg:col-span-3">
               Gewerke-Koordination
             </Eyebrow>
             <h2 id="one-hand-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
@@ -61,8 +61,8 @@ export default function GewerbePage() {
         </div>
       </section>
 
-      <WorldProjects world="gewerbe" number="06" />
-      <InquiryCta number="07" />
+      <WorldProjects world="gewerbe" />
+      <InquiryCta />
     </PageMotion>
   );
 }

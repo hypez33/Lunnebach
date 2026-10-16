@@ -45,7 +45,6 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
   const hero = img(project.heroImage);
   const next = getNextProject(project.slug);
   const nextImage = img(next.heroImage);
-  const index = projects.indexOf(project);
   const vertical = project.dimension.orientation === "vertical";
 
   const meta = [
@@ -106,7 +105,7 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
               </div>
 
               <div className="col-span-4 flex flex-col justify-end md:col-span-8 lg:col-span-4 lg:col-start-9">
-                <Eyebrow number={`Pos. ${String(index + 1).padStart(2, "0")}`} className="text-ink-muted">
+                <Eyebrow className="text-ink-muted">
                   Projekt
                 </Eyebrow>
                 <h1
@@ -217,7 +216,7 @@ export default async function ProjectPage({ params }: PageProps<"/projekte/[slug
         </Link>
       </nav>
 
-      <InquiryCta number={null} showMap={false} />
+      <InquiryCta showMap={false} />
     </PageMotion>
   );
 }

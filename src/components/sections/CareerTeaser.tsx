@@ -15,7 +15,7 @@ export function CareerTeaser() {
     <section aria-labelledby="career-title" data-theme="dark" className="theme-dark section-y relative overflow-hidden">
       <div className="container-site grid-12 items-center gap-y-14">
         <div className="col-span-4 md:col-span-8 lg:col-span-6">
-          <Eyebrow number="07" className="text-paper-muted">
+          <Eyebrow className="text-paper-muted">
             Karriere
           </Eyebrow>
           <h2 id="career-title" data-split className="mt-6 text-h2">

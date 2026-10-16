@@ -18,7 +18,7 @@ export function TwoWorlds() {
           Zwei Welten: Privat und Gewerbe
         </h2>
         <div className="worlds flex flex-col gap-4 lg:h-[min(82svh,760px)] lg:flex-row">
-          {home.worlds.map((w, i) => {
+          {home.worlds.map((w) => {
             const image = img(w.image);
             return (
               <article key={w.key} data-active-in-view className="world group relative flex min-h-[520px] flex-col overflow-hidden bg-paper-2 lg:min-h-0">
@@ -37,11 +37,9 @@ export function TwoWorlds() {
                 </div>
                 <div className="relative z-10 flex flex-col gap-4 p-[clamp(1.25rem,3vw,2.5rem)]">
                   <p className="eyebrow flex justify-between text-ink-muted">
-                    <span>
-                      Pos. {i === 0 ? "A" : "B"} — {w.eyebrow}
-                    </span>
+                    <span>{w.eyebrow}</span>
                     <span aria-hidden className="hidden sm:inline">
-                      {w.key === "privat" ? "Wohnräume" : "Objekte"} / 0{i + 1}
+                      {w.key === "privat" ? "Wohnräume" : "Objekte"}
                     </span>
                   </p>
                   <h3 className="text-h2">

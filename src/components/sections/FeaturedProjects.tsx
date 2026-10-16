@@ -11,7 +11,7 @@ export function FeaturedProjects() {
     <section aria-labelledby="featured-title" className="section-y border-t border-line">
       <div className="container-site">
         <div className="grid-12 gap-y-6">
-          <Eyebrow number="03" className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
+          <Eyebrow className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
             Projekte
           </Eyebrow>
           <h2 id="featured-title" data-split className="col-span-4 text-h2 md:col-span-6 lg:col-span-6">
@@ -24,7 +24,6 @@ export function FeaturedProjects() {
           {a && (
             <ProjectCard
               project={a}
-              index={0}
               scrollDimension
               sizes="(min-width: 1024px) 800px, 100vw"
               className="col-span-4 max-w-[800px] md:col-span-7 lg:col-span-7"
@@ -33,7 +32,6 @@ export function FeaturedProjects() {
           {b && (
             <ProjectCard
               project={b}
-              index={1}
               scrollDimension
               sizes="(min-width: 1024px) 520px, 100vw"
               aspect="4 / 5"
@@ -43,7 +41,6 @@ export function FeaturedProjects() {
           {c && (
             <ProjectCard
               project={c}
-              index={2}
               scrollDimension
               sizes="(min-width: 1024px) 680px, 100vw"
               className="col-span-4 max-w-[800px] md:col-span-6 lg:col-span-6 lg:col-start-2"
@@ -52,7 +49,6 @@ export function FeaturedProjects() {
           {d && (
             <ProjectCard
               project={d}
-              index={3}
               scrollDimension
               sizes="(min-width: 1024px) 560px, 100vw"
               aspect="4 / 3"

@@ -9,7 +9,7 @@ import { site } from "@/content/site";
 const door = img("privat/wohnen/spiegel-schrankwand-schlafzimmer");
 
 /** Schwestermarke Cabinet – Bild öffnet sich wie eine Schiebetür (clip „door“). */
-export function CabinetTeaser({ number = "08" }: { number?: string }) {
+export function CabinetTeaser() {
   const c = home.cabinet;
   return (
     <section aria-labelledby="cabinet-title" className="section-y">
@@ -23,7 +23,7 @@ export function CabinetTeaser({ number = "08" }: { number?: string }) {
           </div>
         </div>
         <div className="col-span-4 md:col-span-3 lg:col-span-5 lg:col-start-8">
-          <Eyebrow number={number} className="text-ink-muted">
+          <Eyebrow className="text-ink-muted">
             Schwestermarke
           </Eyebrow>
           <h2 id="cabinet-title" data-split className="mt-6 text-h2">

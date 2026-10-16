@@ -35,7 +35,7 @@ export function Hero() {
 
         <div className="grid-12 mt-[clamp(2rem,4vw,3.5rem)] gap-y-14">
           <div className="col-span-4 md:col-span-8 lg:col-span-8 lg:pt-2">
-            <h1 id="hero-title" data-hero-title data-hero-hidden className="text-display font-[360] tracking-[-0.03em] [font-variation-settings:'opsz'_144,'SOFT'_60]">
+            <h1 id="hero-title" data-hero-title data-hero-hidden className="text-display font-[440] tracking-[-0.03em] [font-variation-settings:'opsz'_144,'SOFT'_60]">
               {/* Mobil sofort sichtbar (LCP-Element), Desktop zeilenweise per SplitText */}
               {h.titleLines[0]} <br className="hidden lg:block" />
               {h.titleLines[1]}

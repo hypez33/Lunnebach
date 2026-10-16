@@ -25,7 +25,7 @@ export default function ProjectsPage() {
           <ProjectGrid projects={projects} />
         </div>
       </section>
-      <InquiryCta number="02" showMap={false} />
+      <InquiryCta showMap={false} />
     </PageMotion>
   );
 }

@@ -26,8 +26,8 @@ export default function PrivatPage() {
       {privatServices.map((s, i) => (
         <ServiceSection key={s.id} service={s} index={i} />
       ))}
-      <WorldProjects world="privat" number="06" />
-      <InquiryCta number="07" />
+      <WorldProjects world="privat" />
+      <InquiryCta />
     </PageMotion>
   );
 }

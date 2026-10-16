@@ -2,7 +2,6 @@ import { Eyebrow } from "./Eyebrow";
 
 type Props = {
   eyebrow: string;
-  number?: string;
   title: string;
   intro?: string;
   children?: React.ReactNode;
@@ -11,13 +10,13 @@ type Props = {
 };
 
 /** Seitenkopf der Unterseiten: Eyebrow, H1 (zeilenweise beim Laden; mobil kürzer), Intro. */
-export function PageHeader({ eyebrow, number = "01", title, intro, children, aside }: Props) {
+export function PageHeader({ eyebrow, title, intro, children, aside }: Props) {
   return (
     <header className="relative overflow-hidden border-b border-line pt-[var(--header-h)]">
       <div aria-hidden className="drafting-grid pointer-events-none absolute inset-0 opacity-45" />
       <div className="container-site relative pb-[clamp(3rem,6vw,6rem)] pt-[clamp(2.5rem,6vw,6rem)]">
         <div className="flex items-center justify-between gap-6">
-          <Eyebrow number={number} className="text-ink-muted">
+          <Eyebrow className="text-ink-muted">
             {eyebrow}
           </Eyebrow>
           <p aria-hidden className="eyebrow hidden text-ink-muted md:block">

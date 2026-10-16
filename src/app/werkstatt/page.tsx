@@ -53,7 +53,7 @@ export default function WerkstattPage() {
       <section aria-labelledby="team-title" className="section-y">
         <div className="container-site">
           <div className="grid-12 gap-y-6">
-            <Eyebrow number="02" className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
+            <Eyebrow className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
               Team
             </Eyebrow>
             <h2 id="team-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
@@ -90,7 +90,7 @@ export default function WerkstattPage() {
         <div aria-hidden className="drafting-grid pointer-events-none absolute inset-0 opacity-45" />
         <div className="container-site relative">
           <div className="grid-12 gap-y-6">
-            <Eyebrow number="03" className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
+            <Eyebrow className="col-span-4 text-ink-muted md:col-span-8 lg:col-span-3">
               Arbeitsweise
             </Eyebrow>
             <h2 id="process-short-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
@@ -115,7 +115,7 @@ export default function WerkstattPage() {
       <section aria-labelledby="machines-title" data-theme="dark" className="theme-dark section-y">
         <div className="container-site">
           <div className="grid-12 gap-y-6">
-            <Eyebrow number="04" className="col-span-4 text-paper-muted md:col-span-8 lg:col-span-3">
+            <Eyebrow className="col-span-4 text-paper-muted md:col-span-8 lg:col-span-3">
               Maschinen
             </Eyebrow>
             <h2 id="machines-title" data-split className="col-span-4 text-h2 md:col-span-8 lg:col-span-8">
@@ -157,9 +157,9 @@ export default function WerkstattPage() {
         </div>
       </section>
 
-      <Values number="05" />
-      <CabinetTeaser number="06" />
-      <InquiryCta number="07" />
+      <Values />
+      <CabinetTeaser />
+      <InquiryCta />
     </PageMotion>
   );
 }
