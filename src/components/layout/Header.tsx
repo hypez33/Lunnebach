@@ -101,7 +101,7 @@ export function Header() {
           </Link>
           <a
             href={site.phone.href}
-            className="inline-flex h-11 w-11 items-center justify-center rounded-[2px] border-[1.5px] border-current lg:hidden"
+            className="press inline-flex h-11 w-11 items-center justify-center rounded-[2px] border-[1.5px] border-current transition-[scale,opacity] duration-150 lg:hidden"
             aria-label={`Anrufen: ${site.phone.display}`}
           >
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden>

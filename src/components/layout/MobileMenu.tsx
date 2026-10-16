@@ -36,7 +36,7 @@ export function MobileMenu({ pathname }: { pathname: string }) {
         onFocus={loadDialog}
         aria-haspopup="dialog"
         aria-expanded={open}
-        className="inline-flex h-11 items-center gap-2 rounded-[2px] border-[1.5px] border-current px-3 text-[0.9375rem] font-medium lg:hidden"
+        className="press inline-flex h-11 items-center gap-2 rounded-[2px] border-[1.5px] border-current px-3 text-[0.9375rem] font-medium transition-[scale,opacity] duration-150 lg:hidden"
       >
         <svg width="18" height="12" viewBox="0 0 18 12" aria-hidden>
           <path d="M0 1h18M0 6h18M0 11h12" stroke="currentColor" strokeWidth="1.6" />

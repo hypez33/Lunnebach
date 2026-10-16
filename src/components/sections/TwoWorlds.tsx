@@ -6,7 +6,9 @@ import { home } from "@/content/pages";
 
 /**
  * „Zwei Welten“: geteilte Fläche; die gehoverte/fokussierte Hälfte wächst (flex-grow per CSS-Transition),
- * das Bild gibt mehr frei (clip-path). Mobil gestapelt. Reduzierte Bewegung → keine Übergänge.
+ * das Bild gibt mehr frei (clip-path). Mobil gestapelt: Der Bildausschnitt öffnet sich an den Scroll
+ * gekoppelt (data-scrub-clip), in der Bildmitte wird die Karte aktiv (Zoom + CTA-Linie).
+ * Reduzierte Bewegung → keine Übergänge.
  */
 export function TwoWorlds() {
   return (
@@ -15,12 +17,12 @@ export function TwoWorlds() {
         <h2 id="worlds-title" className="sr-only">
           Zwei Welten: Privat und Gewerbe
         </h2>
-        <div className="worlds flex flex-col gap-4 lg:h-[min(82vh,760px)] lg:flex-row">
+        <div className="worlds flex flex-col gap-4 lg:h-[min(82svh,760px)] lg:flex-row">
           {home.worlds.map((w, i) => {
             const image = img(w.image);
             return (
-              <article key={w.key} className="world group relative flex min-h-[520px] flex-col overflow-hidden bg-paper-2 lg:min-h-0">
-                <div className="world-media relative flex-1 overflow-hidden">
+              <article key={w.key} data-active-in-view className="world group relative flex min-h-[520px] flex-col overflow-hidden bg-paper-2 lg:min-h-0">
+                <div data-scrub-clip="inset(4% 4% 0% 4%)" className="world-media relative flex-1 overflow-hidden">
                   <Image
                     src={image.src}
                     alt=""

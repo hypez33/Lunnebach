@@ -47,6 +47,10 @@ export function HeroMotion({ children, className = "" }: { children: React.React
           gsap.set(fades, { visibility: "visible" });
           tl.from(fades, { y: 18, autoAlpha: 0, duration: 0.8, stagger: 0.08, ease: EASE.out }, 0.55);
         }
+      } else {
+        // Startzustände gelten für alle Breiten – mobil vorerst sofort sichtbar
+        gsap.set([title, ...fades], { visibility: "visible" });
+        if (door) gsap.set(door, { clipPath: "inset(0% 0% 0% 0%)" });
       }
 
       dims.forEach((d) => {

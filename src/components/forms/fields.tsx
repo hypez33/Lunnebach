@@ -132,7 +132,7 @@ export function ChoiceCards({
           <Radio
             key={o.value}
             value={o.value}
-            className="group relative flex min-h-[7.5rem] cursor-pointer flex-col justify-between gap-6 rounded-[2px] border-[1.5px] border-ink-muted bg-paper p-5 transition-colors data-[hovered]:border-ink data-[selected]:border-ink data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
+            className="group relative flex min-h-[7.5rem] press cursor-pointer flex-col justify-between gap-6 rounded-[2px] border-[1.5px] border-ink-muted bg-paper p-5 transition-[color,background-color,border-color,scale,opacity] duration-150 data-[hovered]:border-ink data-[selected]:border-ink data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
           >
             <span className="flex items-start justify-between gap-4">
               <span className="mono text-[0.75rem] uppercase tracking-[0.1em] opacity-80">{o.meta}</span>
@@ -196,7 +196,7 @@ export function RadioList({
           <Radio
             key={o}
             value={o}
-            className="inline-flex min-h-11 cursor-pointer items-center gap-3 rounded-[2px] border-[1.5px] border-ink-muted bg-paper px-4 transition-colors data-[hovered]:border-ink data-[selected]:border-ink data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
+            className="inline-flex min-h-11 press cursor-pointer items-center gap-3 rounded-[2px] border-[1.5px] border-ink-muted bg-paper px-4 transition-[color,background-color,border-color,scale,opacity] duration-150 data-[hovered]:border-ink data-[selected]:border-ink data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
           >
             {o}
           </Radio>
@@ -248,7 +248,7 @@ export function CheckboxChips({
           <Checkbox
             key={o}
             value={o}
-            className="group flex min-h-12 cursor-pointer items-center gap-3 rounded-[2px] border-[1.5px] border-ink-muted bg-paper px-4 py-2 transition-colors data-[hovered]:border-ink data-[selected]:border-ink data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
+            className="group flex min-h-12 press cursor-pointer items-center gap-3 rounded-[2px] border-[1.5px] border-ink-muted bg-paper px-4 py-2 transition-[color,background-color,border-color,scale,opacity] duration-150 data-[hovered]:border-ink data-[selected]:border-ink data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
           >
             <span
               aria-hidden

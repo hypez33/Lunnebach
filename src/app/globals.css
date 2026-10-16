@@ -69,6 +69,8 @@
 
   html {
     scroll-padding-top: calc(var(--header-h) + 1rem);
+    /* Eigenes Tap-Feedback (Utility „press“, .btn:active) ersetzt den grauen Standard-Blitz */
+    -webkit-tap-highlight-color: transparent;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
   }
@@ -266,6 +268,27 @@
   }
 }
 
+/* Tap-Feedback: kurzer Press-State (120 ms). Das Element braucht `scale` in seiner transition-property.
+   Reduzierte Bewegung: statt Skalierung nur kurz heller. */
+@utility press {
+  &:active,
+  &[data-pressed] {
+    scale: var(--press-scale, 0.98);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    &:active,
+    &[data-pressed] {
+      scale: none;
+      opacity: 0.82;
+    }
+  }
+  [data-motion="reduced"] &:active,
+  [data-motion="reduced"] &[data-pressed] {
+    scale: none;
+    opacity: 0.82;
+  }
+}
+
 /* ------------------------------------------------------------------
    Links & Buttons – „Anriss“-Linie unter dem Label
    ------------------------------------------------------------------ */
@@ -276,9 +299,13 @@
   background-repeat: no-repeat;
   text-decoration: none;
   transition: background-size 0.5s var(--ease-lunnebach);
-  &:hover,
   &:focus-visible {
     background-size: 100% 1px;
+  }
+  @media (hover: hover) {
+    &:hover {
+      background-size: 100% 1px;
+    }
   }
 }
 
@@ -287,7 +314,12 @@
   text-decoration: underline;
   text-decoration-thickness: 1px;
   text-underline-offset: 0.22em;
-  &:hover {
+  @media (hover: hover) {
+    &:hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+  &:active {
     text-decoration-thickness: 2px;
   }
   [data-theme="dark"] & {
@@ -320,7 +352,13 @@
   cursor: pointer;
   transition:
     background-color 0.3s var(--ease-lunnebach),
-    color 0.3s var(--ease-lunnebach);
+    color 0.3s var(--ease-lunnebach),
+    scale 0.12s var(--ease-lunnebach),
+    opacity 0.12s var(--ease-lunnebach);
+}
+.btn:active,
+.btn[data-pressed] {
+  scale: 0.98;
 }
 .btn-label {
   position: relative;
@@ -338,9 +376,15 @@
   transform-origin: left;
   transition: transform 0.55s var(--ease-lunnebach);
 }
-.btn:hover .btn-label::after,
-.btn:focus-visible .btn-label::after {
+.btn:focus-visible .btn-label::after,
+.btn:active .btn-label::after,
+.btn[data-pressed] .btn-label::after {
   transform: scaleX(1);
+}
+@media (hover: hover) {
+  .btn:hover .btn-label::after {
+    transform: scaleX(1);
+  }
 }
 .btn-primary {
   --btn-bg: var(--color-accent);
@@ -363,9 +407,13 @@
 .btn-arrow {
   transition: transform 0.45s var(--ease-lunnebach);
 }
-.btn:hover .btn-arrow,
 .btn:focus-visible .btn-arrow {
   transform: translateX(0.25rem);
+}
+@media (hover: hover) {
+  .btn:hover .btn-arrow {
+    transform: translateX(0.25rem);
+  }
 }
 
 /* ------------------------------------------------------------------
@@ -399,12 +447,18 @@ textarea.field-input {
    Motion – Anfangszustände nur mit JS und ohne reduzierte Bewegung.
    Failsafe: .motion-failsafe (gesetzt nach 3 s ohne Motion-Init) zeigt alles.
    ------------------------------------------------------------------ */
-@media (min-width: 1024px) and (prefers-reduced-motion: no-preference) {
+@media (prefers-reduced-motion: no-preference) {
   .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-hidden] {
     visibility: hidden;
   }
+  /* Schiebetür: Desktop von rechts, Hochformat von unten nach oben */
   .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-door] {
-    clip-path: inset(0 0 0 100%);
+    clip-path: inset(100% 0 0 0);
+  }
+  @media (min-width: 1024px) {
+    .js:not([data-motion="reduced"]):not(.motion-failsafe) [data-hero-door] {
+      clip-path: inset(0 0 0 100%);
+    }
   }
 }
 
@@ -413,6 +467,7 @@ textarea.field-input {
   *,
   *::before,
   *::after {
+    animation-delay: 0s !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -422,6 +477,7 @@ textarea.field-input {
 [data-motion="reduced"] *,
 [data-motion="reduced"] *::before,
 [data-motion="reduced"] *::after {
+  animation-delay: 0s !important;
   animation-duration: 0.01ms !important;
   animation-iteration-count: 1 !important;
   transition-duration: 0.01ms !important;
@@ -606,34 +662,59 @@ html[data-menu-open] .site-header {
 
 /* ------------------------------------------------------------------
    Zwei Welten
+   Desktop (Hover/Fokus): die aktive Hälfte wächst (flex-grow), Clip öffnet sich, Bild zoomt, CTA-Linie läuft.
+   Touch: .is-active (in der Bildmitte, PageMotion) zoomt Bild + CTA-Linie; den Clip öffnet ein Scrub.
    ------------------------------------------------------------------ */
 @layer components {
 .world {
   flex: 1 1 0%;
-  transition: flex-grow 0.9s var(--ease-lunnebach);
+  transition:
+    flex-grow 0.9s var(--ease-lunnebach),
+    scale 0.12s var(--ease-lunnebach);
+}
+.world:has(.world-link:active) {
+  scale: 0.99;
 }
 .world-media {
   clip-path: inset(4% 4% 0 4%);
-  transition: clip-path 0.9s var(--ease-lunnebach);
 }
 .world-media img {
   transition: transform 1.2s var(--ease-expo-out);
 }
-.world:hover .world-media,
 .world:focus-within .world-media {
   clip-path: inset(0 0 0 0);
 }
-.world:hover .world-media img,
-.world:focus-within .world-media img {
+.world:focus-within .world-media img,
+.world.is-active .world-media img {
   transform: scale(1.03);
 }
+@media (hover: hover) {
+  .world-media {
+    transition: clip-path 0.9s var(--ease-lunnebach);
+  }
+  .world:hover .world-media {
+    clip-path: inset(0 0 0 0);
+  }
+  .world:hover .world-media img {
+    transform: scale(1.03);
+  }
+  .world:hover .world-cta {
+    background-size: 100% 1.5px;
+  }
+}
 @media (min-width: 1024px) {
-  .worlds:hover .world:not(:hover),
   .worlds:focus-within .world:not(:focus-within) {
     flex-grow: 0.72;
   }
-  .world:hover,
   .world:focus-within {
+    flex-grow: 1.35;
+  }
+}
+@media (min-width: 1024px) and (hover: hover) {
+  .worlds:hover .world:not(:hover) {
+    flex-grow: 0.72;
+  }
+  .world:hover {
     flex-grow: 1.35;
   }
 }
@@ -644,8 +725,8 @@ html[data-menu-open] .site-header {
   background-repeat: no-repeat;
   transition: background-size 0.55s var(--ease-lunnebach);
 }
-.world:hover .world-cta,
-.world:focus-within .world-cta {
+.world:focus-within .world-cta,
+.world.is-active .world-cta {
   background-size: 100% 1.5px;
 }
 /* Fokus der gestreckten Link-Fläche sichtbar machen */
@@ -657,8 +738,16 @@ html[data-menu-open] .site-header {
 
 /* ------------------------------------------------------------------
    Projektkarte
+   Hover/Fokus: Maßkette an der Bildunterkante, Titel-Linie, Bildzoom.
+   Touch: dasselbe über .is-active; die Maßkette zeichnet sich dort per DrawSVG (PageMotion).
    ------------------------------------------------------------------ */
 @layer components {
+.project-card {
+  transition: scale 0.12s var(--ease-lunnebach);
+}
+.project-card:has(.card-title-link:active) {
+  scale: 0.985;
+}
 .card-dim {
   opacity: 0;
   clip-path: inset(0 100% 0 0);
@@ -666,10 +755,14 @@ html[data-menu-open] .site-header {
     opacity 0.3s var(--ease-lunnebach),
     clip-path 0.7s var(--ease-lunnebach);
 }
-.project-card:hover .card-dim,
 .project-card:focus-within .card-dim {
   opacity: 1;
   clip-path: inset(-2rem -1rem -2rem -1rem);
+}
+.project-card.is-active .card-dim {
+  opacity: 1;
+  clip-path: none;
+  transition: opacity 0.2s var(--ease-lunnebach);
 }
 .card-title {
   background-image: linear-gradient(currentColor, currentColor);
@@ -678,9 +771,18 @@ html[data-menu-open] .site-header {
   background-repeat: no-repeat;
   transition: background-size 0.6s var(--ease-lunnebach);
 }
-.project-card:hover .card-title,
-.project-card:focus-within .card-title {
+.project-card:focus-within .card-title,
+.project-card.is-active .card-title {
   background-size: 100% 1.5px;
+}
+@media (hover: hover) {
+  .project-card:hover .card-dim {
+    opacity: 1;
+    clip-path: inset(-2rem -1rem -2rem -1rem);
+  }
+  .project-card:hover .card-title {
+    background-size: 100% 1.5px;
+  }
 }
 .card-title-link:focus-visible::after {
   outline: 3px solid var(--focus-color);
@@ -739,7 +841,7 @@ html[data-menu-open] .site-header {
   overflow: hidden;
 }
 .process--horizontal .process-head {
-  padding-top: calc(var(--header-h) + clamp(1.5rem, 4vh, 3rem));
+  padding-top: calc(var(--header-h) + clamp(1.5rem, 4svh, 3rem));
 }
 .process--horizontal .process-viewport {
   flex: 1;
@@ -767,19 +869,24 @@ html[data-menu-open] .site-header {
   gap: clamp(2rem, 4vw, 4rem);
 }
 .process--horizontal .process-media {
-  max-height: 58vh;
+  max-height: 58svh;
 }
 .process--horizontal .process-media > div {
-  max-height: 58vh;
+  max-height: 58svh;
 }
 .process--horizontal .process-ruler {
-  padding-bottom: clamp(1.5rem, 4vh, 3rem);
+  padding-bottom: clamp(1.5rem, 4svh, 3rem);
 }
 
 @layer components {
-  .next-project:hover .card-title,
-  .next-project:focus-visible .card-title {
+  .next-project:focus-visible .card-title,
+  .next-project:active .card-title {
     background-size: 100% 2px;
+  }
+  @media (hover: hover) {
+    .next-project:hover .card-title {
+      background-size: 100% 2px;
+    }
   }
 }
 

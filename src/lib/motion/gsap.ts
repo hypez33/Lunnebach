@@ -34,6 +34,8 @@ export function loadMotion(): Promise<MotionLib> {
     ]).then(([{ ScrollTrigger }, { SplitText }, { DrawSVGPlugin }, { Flip }, { CustomEase }]) => {
       gsap.registerPlugin(ScrollTrigger, SplitText, DrawSVGPlugin, Flip, CustomEase);
       CustomEase.create(EASE.lunnebach, LUNNEBACH_EASE_CURVE);
+      // Ein-/Ausblenden der mobilen Adressleiste löst kein Refresh aus (sonst springen Scrub-Strecken)
+      ScrollTrigger.config({ ignoreMobileResize: true });
       return { gsap, ScrollTrigger, SplitText, Flip };
     });
   }

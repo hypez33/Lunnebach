@@ -23,6 +23,8 @@ type Props = {
 /**
  * Projektkarte. Hover/Fokus: Bild skaliert minimal (1.03), Maßkette zeigt sich an der Kante,
  * Titel-Linie läuft durch. Bild ist View-Transition-Quelle für den Detail-Hero (Moment 4).
+ * Touch: derselbe Zustand, sobald die Karte in der Bildmitte steht (data-active-in-view, Maßkette
+ * zeichnet sich), dazu ein dezenter Parallax im Rahmen und ein Press-State beim Antippen.
  */
 export function ProjectCard({
   project,
@@ -38,7 +40,7 @@ export function ProjectCard({
   const image = img(project.heroImage);
   const vertical = project.dimension.orientation === "vertical";
   return (
-    <article className={`project-card group relative ${className}`}>
+    <article data-active-in-view className={`project-card group relative ${className}`}>
       <div className={`relative ${scrollDimension ? (vertical ? "pr-8" : "pt-8") : ""}`}>
         {scrollDimension && (
           <div className={vertical ? "absolute bottom-0 right-0 top-0" : "absolute inset-x-0 top-0"}>
@@ -48,17 +50,19 @@ export function ProjectCard({
         <div data-clip={reveal ? "up" : undefined} className="relative overflow-hidden bg-paper-2">
           <ViewTransition name={`project-${project.slug}`} share="morph" default="none">
             <div className="grain relative" style={{ aspectRatio: aspect ?? `${image.width} / ${image.height}` }}>
-              <Image
-                src={image.src}
-                alt=""
-                fill
-                sizes={sizes}
-                preload={preload}
-                placeholder="blur"
-                blurDataURL={image.blurDataURL}
-                quality={85}
-                className="object-cover transition-transform duration-[900ms] ease-[var(--ease-expo-out)] group-hover:scale-[1.03] group-focus-within:scale-[1.03]"
-              />
+              <div data-parallax className="absolute inset-0">
+                <Image
+                  src={image.src}
+                  alt=""
+                  fill
+                  sizes={sizes}
+                  preload={preload}
+                  placeholder="blur"
+                  blurDataURL={image.blurDataURL}
+                  quality={85}
+                  className="object-cover transition-transform duration-[900ms] ease-[var(--ease-expo-out)] group-hover:scale-[1.03] group-focus-within:scale-[1.03] group-[.is-active]:scale-[1.03]"
+                />
+              </div>
             </div>
           </ViewTransition>
           {/* Hover-Maßkette an der Bildunterkante */}

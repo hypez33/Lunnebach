@@ -89,7 +89,7 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
             <ToggleButton
               key={f.id}
               id={f.id}
-              className="inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[2px] border-[1.5px] border-ink px-4 font-medium transition-colors data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
+              className="press inline-flex min-h-11 cursor-pointer items-center gap-2 rounded-[2px] border-[1.5px] border-ink px-4 font-medium transition-[color,background-color,scale,opacity] duration-150 data-[selected]:bg-ink data-[selected]:text-paper data-[focus-visible]:outline-3 data-[focus-visible]:outline-offset-3 data-[focus-visible]:outline-solid data-[focus-visible]:[outline-color:var(--focus-color)]"
             >
               {f.label}
               <span className="mono text-xs opacity-70">

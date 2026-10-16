@@ -34,8 +34,9 @@ export const viewport: Viewport = {
 /**
  * Läuft vor dem ersten Paint: markiert JS-Verfügbarkeit (.js), übernimmt den gespeicherten
  * Motion-Schalter und setzt nach 3 s einen Failsafe, falls Motion-Code nicht startet.
+ * Der leere touchstart-Listener aktiviert :active (Tap-Feedback) in iOS Safari.
  */
-const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('${MOTION_STORAGE_KEY}')==='reduced')d.setAttribute('data-motion','reduced')}catch(e){}setTimeout(function(){if(!d.classList.contains('motion-ready'))d.classList.add('motion-failsafe')},3000)})();`;
+const bootScript = `(function(){var d=document.documentElement;d.classList.add('js');try{if(localStorage.getItem('${MOTION_STORAGE_KEY}')==='reduced')d.setAttribute('data-motion','reduced')}catch(e){}document.addEventListener('touchstart',function(){},{passive:true});setTimeout(function(){if(!d.classList.contains('motion-ready'))d.classList.add('motion-failsafe')},3000)})();`;
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
