@@ -10,21 +10,29 @@ import { MobileMenu } from "./MobileMenu";
 /**
  * Header: blendet beim Runterscrollen aus, beim Hochscrollen ein (nie, solange der Fokus darin liegt).
  * Ton (hell/dunkel) richtet sich nach der Sektion unter dem Header ([data-theme="dark"]).
+ * Mobil: Lese-Fortschritt als 2-px-Anrisslinie direkt unter dem Header – blendet der Header aus,
+ * bleibt sie am oberen Rand stehen. Scrollwerte werden auf [0, max] begrenzt, damit das Zurückfedern
+ * (iOS-Overscroll) an Seitenanfang und -ende kein Ein-/Ausblenden auslöst.
  */
 export function Header() {
   const pathname = usePathname();
   const ref = useRef<HTMLElement>(null);
+  const progress = useRef<HTMLSpanElement>(null);
   const [hidden, setHidden] = useState(false);
   const [dark, setDark] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
-    let lastY = window.scrollY;
+    const maxScroll = () => Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+    const clampY = () => Math.min(Math.max(window.scrollY, 0), maxScroll());
+    let lastY = clampY();
     let ticking = false;
 
     const update = () => {
       ticking = false;
-      const y = window.scrollY;
+      const y = clampY();
+      const max = maxScroll();
+      if (progress.current) progress.current.style.transform = `scaleX(${max ? (y / max).toFixed(4) : 0})`;
       const header = ref.current;
       if (!header) return;
       const focusInside = header.contains(document.activeElement);
@@ -71,6 +79,7 @@ export function Header() {
       data-scrolled={scrolled || undefined}
       className="site-header fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[transform,background-color,color,border-color] duration-500 ease-[var(--ease-lunnebach)] data-[hidden]:-translate-y-full"
     >
+      <span ref={progress} aria-hidden className="read-progress pointer-events-none absolute inset-x-0 top-full h-[2px] origin-left bg-accent lg:hidden" />
       <div className="container-site flex h-full items-center justify-between gap-6">
         <Link href="/" className="-my-2 flex min-h-11 items-center py-2" aria-label="Lunnebach – zur Startseite">
           <Logo className="h-8 sm:h-9" />

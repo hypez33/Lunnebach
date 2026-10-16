@@ -572,6 +572,18 @@ textarea.field-input {
 html[data-menu-open] .site-header {
   transform: none;
 }
+.read-progress {
+  transform: scaleX(0);
+}
+/* Lese-Fortschritt: neu, daher bei reduzierter Bewegung aus */
+@media (prefers-reduced-motion: reduce) {
+  .read-progress {
+    display: none;
+  }
+}
+[data-motion="reduced"] .read-progress {
+  display: none;
+}
 }
 
 /* ------------------------------------------------------------------

@@ -2,12 +2,14 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState, useTransition } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, useTransition } from "react";
 import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button } from "react-aria-components";
 import { site } from "@/content/site";
 import { submitInquiry } from "@/lib/forms/actions";
 import { INQUIRY_STORAGE_KEY } from "@/lib/forms/constants";
+import { gsap } from "@/lib/motion/gsap";
+import { isMotionReduced } from "@/lib/motion/preference";
 import { budgets, inquirySchema, inquiryStepFields, projectTypes, timeframes, type InquiryValues } from "@/lib/forms/inquiry";
 import { CheckboxChips, ChoiceCards, FileField, Honeypot, RadioList, TextInput } from "./fields";
 
@@ -35,6 +37,8 @@ const FIELD_LABELS: Partial<Record<keyof InquiryValues, string>> = {
  * - Fehler inline im Klartext + Zusammenfassung per aria-live
  * - Fokus springt beim Schrittwechsel auf die neue Schrittüberschrift
  * - kein Zeitlimit, Honeypot gegen Spam, Absenden über Server Action
+ * - Motion: neuer Schritt gleitet herein (vorwärts von rechts, zurück von links), Fortschritt füllt sich,
+ *   Auswahlkarten mit Press-State und Haken, der sich zeichnet. Reduziert: sofortiger Wechsel.
  */
 export function InquiryWizard() {
   const router = useRouter();
@@ -44,6 +48,8 @@ export function InquiryWizard() {
   const [pending, startTransition] = useTransition();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const firstRender = useRef(true);
+  const stepRef = useRef<HTMLDivElement>(null);
+  const prevStep = useRef(0);
 
   const {
     control,
@@ -69,6 +75,22 @@ export function InquiryWizard() {
   });
 
   const world = useWatch({ control, name: "world" });
+
+  // Schrittwechsel: aus der Laufrichtung hereingleiten (vor dem Paint, kein Aufblitzen)
+  useLayoutEffect(() => {
+    const dir = Math.sign(step - prevStep.current);
+    prevStep.current = step;
+    const el = stepRef.current;
+    if (!dir || !el || isMotionReduced()) return;
+    const tween = gsap.fromTo(
+      el,
+      { x: dir * Math.min(64, window.innerWidth * 0.12), opacity: 0 },
+      { x: 0, opacity: 1, duration: 0.35, ease: "power3.out", clearProps: "transform,opacity" },
+    );
+    return () => {
+      tween.kill();
+    };
+  }, [step]);
 
   // Fokus auf neue Schrittüberschrift (nicht beim ersten Rendern)
   useEffect(() => {
@@ -144,10 +166,12 @@ export function InquiryWizard() {
       <ol aria-label="Fortschritt" className="grid grid-cols-4 gap-2">
         {STEPS.map((st, i) => (
           <li key={st.short} aria-current={i === step ? "step" : undefined} className="flex flex-col gap-2">
-            <span
-              aria-hidden
-              className={`h-1.5 rounded-[1px] transition-colors duration-500 ${i <= step ? "bg-accent" : "bg-line-strong"}`}
-            />
+            <span aria-hidden className="relative h-1.5 overflow-hidden rounded-[1px] bg-line-strong">
+              <span
+                className={`absolute inset-0 origin-left bg-accent transition-transform duration-500 ease-[var(--ease-lunnebach)] ${i <= step ? "scale-x-100" : "scale-x-0"}`}
+                style={{ transitionDelay: i === step ? "120ms" : "0ms" }}
+              />
+            </span>
             <span className={`mono text-[0.75rem] uppercase tracking-[0.08em] ${i === step ? "text-ink" : "text-ink-muted"}`}>
               <span aria-hidden>{String(i + 1).padStart(2, "0")} </span>
               <span className="hidden sm:inline">{st.short}</span>
@@ -157,7 +181,7 @@ export function InquiryWizard() {
         ))}
       </ol>
 
-      <div className="mt-12" role="group" aria-labelledby="step-title">
+      <div ref={stepRef} className="mt-12" role="group" aria-labelledby="step-title">
         <h3 id="step-title" ref={headingRef} tabIndex={-1} className="outline-none">
           <span className="eyebrow block text-ink-muted">
             Schritt {step + 1} von {STEPS.length}

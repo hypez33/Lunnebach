@@ -140,7 +140,17 @@ export function ChoiceCards({
                 aria-hidden
                 className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border-[1.5px] border-current"
               >
-                <span className="h-2.5 w-2.5 rounded-full bg-accent opacity-0 transition-opacity group-data-[selected]:opacity-100" />
+                {/* Haken zeichnet sich bei Auswahl (stroke-dashoffset) */}
+                <svg viewBox="0 0 12 10" className="h-2.5 w-3 overflow-visible text-accent">
+                  <path
+                    d="M1 5l3.5 3.5L11 1"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    pathLength={1}
+                    className="[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] duration-[350ms] ease-[var(--ease-lunnebach)] group-data-[selected]:[stroke-dashoffset:0]"
+                  />
+                </svg>
               </span>
             </span>
             <span>
@@ -252,10 +262,17 @@ export function CheckboxChips({
           >
             <span
               aria-hidden
-              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[2px] border-[1.5px] border-ink group-data-[selected]:bg-ink"
+              className="flex h-5 w-5 shrink-0 items-center justify-center rounded-[2px] border-[1.5px] border-ink transition-colors duration-200 group-data-[selected]:bg-ink"
             >
-              <svg viewBox="0 0 12 10" className="h-2.5 w-3 text-paper opacity-0 group-data-[selected]:opacity-100">
-                <path d="M1 5l3.5 3.5L11 1" fill="none" stroke="currentColor" strokeWidth="2" />
+              <svg viewBox="0 0 12 10" className="h-2.5 w-3 overflow-visible text-paper">
+                <path
+                  d="M1 5l3.5 3.5L11 1"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  pathLength={1}
+                  className="[stroke-dasharray:1] [stroke-dashoffset:1] transition-[stroke-dashoffset] delay-75 duration-300 ease-[var(--ease-lunnebach)] group-data-[selected]:[stroke-dashoffset:0]"
+                />
               </svg>
             </span>
             {o}
