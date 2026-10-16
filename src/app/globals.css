@@ -71,6 +71,7 @@
   --palette-success: #2f6b3a;
   --palette-error: #a3261c;
   --palette-error-dark: #ff9d8f;
+  --hero-dark-image: 0;
   --logo-on-light: 1;
   --logo-on-dark: 0;
 }
@@ -86,6 +87,7 @@ html[data-color-mode="dark"] {
   --color-line-strong: rgb(244 241 236 / 0.28);
   --color-success: #9ac29d;
   --color-error: var(--palette-error-dark);
+  --hero-dark-image: 1;
   --logo-on-light: 0;
   --logo-on-dark: 1;
   --focus-color: var(--color-accent);
@@ -103,6 +105,7 @@ html[data-color-mode="dark"] {
   --color-line-strong: rgb(244 241 236 / 0.28);
   --color-success: #9ac29d;
   --color-error: var(--palette-error-dark);
+  --hero-dark-image: 1;
   --logo-on-light: 0;
   --logo-on-dark: 1;
   --focus-color: var(--color-accent);
@@ -1831,6 +1834,9 @@ html[data-menu-open] .site-header {
   }
 }
 
+.hero-vitrine-light { opacity: calc(1 - var(--hero-dark-image)); }
+.hero-vitrine-dark { opacity: var(--hero-dark-image); }
+
 /* ------------------------------------------------------------------
    Hero: Röntgenblick auf die Werkzeichnung (HeroBlueprint)
    Variablen am Bildrahmen: --mx/--my/--r (Lupe), --sy (Scanlinie)
@@ -1879,8 +1885,8 @@ html[data-menu-open] .site-header {
   cursor: zoom-in;
 }
 .bp--scan .bp {
-  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
-  mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 18%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+  mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 18%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
 }
 .bp--scan .bp-scanline {
   display: block;

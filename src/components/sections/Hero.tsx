@@ -88,17 +88,29 @@ export function Hero() {
 
 function HeroImage() {
   return (
-    <Image
-      src={panel.src}
-      alt={panel.alt}
-      fill
-      preload
-      sizes="(min-width: 1024px) 420px, (min-width: 768px) 60vw, 90vw"
-      placeholder="blur"
-      blurDataURL={panel.blurDataURL}
-      quality={85}
-      className="object-cover"
-    />
+    <div data-hero-image className="absolute inset-0">
+      <Image
+        src={panel.src}
+        alt={panel.alt}
+        fill
+        preload
+        sizes="(min-width: 1024px) 420px, (min-width: 768px) 60vw, 90vw"
+        placeholder="blur"
+        blurDataURL={panel.blurDataURL}
+        quality={85}
+        className="hero-vitrine-light object-cover"
+      />
+      <Image
+        src="/images/hero/moebelbau-vitrine-dark.jpg"
+        alt=""
+        aria-hidden
+        fill
+        loading="eager"
+        sizes="(min-width: 1024px) 420px, (min-width: 768px) 60vw, 90vw"
+        quality={85}
+        className="hero-vitrine-dark object-cover"
+      />
+    </div>
   );
 }
 
