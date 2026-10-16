@@ -101,7 +101,7 @@ function HeroImage() {
         className="hero-vitrine-light object-cover"
       />
       <Image
-        src="/images/hero/moebelbau-vitrine-dark.jpg"
+        src="/images/hero/moebelbau-vitrine-dark-v2.jpg"
         alt=""
         aria-hidden
         fill
