@@ -7,13 +7,13 @@ import { EASE } from "@/lib/motion/eases";
 import { gsap } from "@/lib/motion/gsap";
 import { isMotionReduced } from "@/lib/motion/preference";
 import { MotionToggle } from "./MotionToggle";
+import { ThemeToggle } from "./ThemeToggle";
 
-const pad = (n: number) => String(n).padStart(2, "0");
 const finished = (anim: gsap.core.Animation) => new Promise<void>((resolve) => void anim.then(() => resolve()));
 /** lunnebach-Ease ist registriert, sobald die Plugins geladen sind – bis dahin ein ähnlicher Standard */
 const doorEase = () => (gsap.parseEase(EASE.lunnebach) ? EASE.lunnebach : "power3.inOut");
 
-/** Öffnen: Schiebetür von rechts (clip-path), Menüpunkte zeilenweise, Nummern zählen mit, Anriss unter dem aktiven Punkt */
+/** Öffnen: Schiebetür von rechts (clip-path), Menüpunkte zeilenweise, Anriss unter dem aktiven Punkt */
 function enter(el: HTMLElement) {
   const q = (s: string) => el.querySelectorAll<HTMLElement>(s);
   if (isMotionReduced()) return finished(gsap.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.2 }));
@@ -21,11 +21,6 @@ function enter(el: HTMLElement) {
   tl.fromTo(el, { clipPath: "inset(0% 0% 0% 100%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.5, ease: doorEase(), clearProps: "clipPath" }, 0)
     .from(q("[data-menu-line]"), { yPercent: 110, duration: 0.6, stagger: 0.05, ease: EASE.reveal }, 0.16)
     .from(q("[data-menu-meta]"), { opacity: 0, duration: 0.4, stagger: 0.05, ease: "power2.out" }, 0.24);
-  q("[data-menu-num]").forEach((num, i) => {
-    const target = Number(num.dataset.menuNum);
-    const o = { v: 0 };
-    tl.to(o, { v: target, duration: 0.35, ease: "power1.out", onUpdate: () => void (num.textContent = pad(Math.round(o.v))) }, 0.24 + i * 0.05);
-  });
   tl.from(q("[data-menu-anriss]"), { scaleX: 0, duration: 0.6, ease: doorEase() }, 0.5).from(
     q("[data-menu-foot]"),
     { y: 12, opacity: 0, duration: 0.45, stagger: 0.06, ease: EASE.out },
@@ -69,7 +64,7 @@ export default function MobileMenuDialog({
       onEnter={enter}
       onExit={exit}
       isDismissable
-      className="fixed inset-0 z-[60] bg-ink"
+      className="mobile-menu-overlay fixed inset-0 z-[60]"
     >
       <Modal className="fixed inset-0 overflow-y-auto">
         <Dialog data-theme="dark" className="theme-dark flex min-h-full flex-col outline-none" aria-labelledby="mobile-menu-title">
@@ -92,7 +87,7 @@ export default function MobileMenuDialog({
 
               <nav aria-label="Hauptnavigation (mobil)" className="container-site flex-1 pt-6">
                 <ul className="border-t border-line-dark">
-                  {mainNav.map((item, i) => {
+                  {mainNav.map((item) => {
                     const active = pathname === item.href || pathname.startsWith(item.href + "/");
                     return (
                       <li key={item.href} className="relative border-b border-line-dark">
@@ -111,7 +106,7 @@ export default function MobileMenuDialog({
                             </span>
                           </span>
                           <span data-menu-meta className="mono text-xs text-paper-muted">
-                            <span data-menu-num={i + 1}>{pad(i + 1)}</span> — {item.description}
+                            {item.description}
                           </span>
                         </Link>
                         {active && <span data-menu-anriss aria-hidden className="absolute inset-x-0 -bottom-px h-[2px] origin-left bg-accent" />}
@@ -136,7 +131,8 @@ export default function MobileMenuDialog({
                     {site.email}
                   </a>
                 </div>
-                <div data-menu-foot>
+                <div data-menu-foot className="flex flex-wrap gap-x-6 gap-y-3">
+                  <ThemeToggle />
                   <MotionToggle tone="dark" />
                 </div>
               </div>

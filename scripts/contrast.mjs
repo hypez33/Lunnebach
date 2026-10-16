@@ -37,6 +37,11 @@ T.paperMuted = "#B9B0A4";
 T.error = "#A3261C";
 
 const rows = [
+  ["Dark Mode: Text auf erhöhter Fläche", T.paper, "#262220", 4.5],
+  ["Dark Mode: gedämpfter Text", T.paperMuted, "#262220", 4.5],
+  ["Dark Mode: Links und Fokus", T.accent, "#262220", 4.5],
+  ["Dark Mode: Erfolg", "#9ac29d", "#262220", 4.5],
+  ["Dark Mode: Fehler", "#ff9d8f", "#262220", 4.5],
   ["ink auf paper", T.ink, T.paper, 4.5],
   ["ink auf paper-2", T.ink, T.paper2, 4.5],
   ["ink-muted auf paper", T.inkMuted, T.paper, 4.5],

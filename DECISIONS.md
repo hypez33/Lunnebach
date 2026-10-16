@@ -94,6 +94,10 @@ Prüfskript: `npm run contrast` (`scripts/contrast.mjs`).
 - Deklarativ: Server Components markieren Elemente mit `data-split`, `data-clip`, `data-dimension`, `data-count`;
   `<PageMotion>` verdrahtet sie.
 - **Moment 1 Hero:** wie spezifiziert (DrawSVG-Linie, Schiebetür-clip, SplitText-Zeilen, Maßkette), < 1,8 s.
+  Unter den CTAs füllt auf Desktop ein breites Werkstattfenster mit dem Teamfoto die freie Fläche.
+  Orange Passmarken, ein Clip-Reveal und getrennte Scroll-/Maus-Parallax-Ebenen setzen es in Szene;
+  der gesamte Ausschnitt führt per Link zur Werkstatt. Die Fotofläche bleibt maximal 600 px breit.
+  Unter 1024 px ist das Fenster ohne Platzhalter ausgeblendet; ohne JS oder reduziert bleibt es statisch sichtbar.
   **Abweichung mobil:** nur Linie + Maßkette animieren; Headline und Bild sind sofort sichtbar, damit sie nicht als
   versteckter LCP-Kandidat auf JS warten.
 - **Moment 2 Maßketten:** Maßlinie in gestrecktem SVG (`preserveAspectRatio="none"`), Endstriche als eigene SVGs –
@@ -193,7 +197,7 @@ Ziel: Mobil fühlt sich so hochwertig an wie Desktop, mit eigener Choreografie f
 | Werkstatt | Zahlen zählen hoch, auch wenn sie beim Laden schon sichtbar sind; Bild-Reveals |
 | Haltung, Karriere, Cabinet, Anfrage | Headline-Reveals, Clip-Reveals, Schiebetür (Cabinet) |
 | Galerie | gestaffelte Reveals, Lightbox mit Flip aus der Kachel, Wischgesten, Rubber-Band an Bild 1/N, nach unten wischen schließt |
-| Menü | Schiebetür von rechts (clip-path), zeilenweise Mask-Reveals, mitzählende Nummern, Anriss unter dem aktiven Punkt; Schließen läuft rückwärts und schneller |
+| Menü | Schiebetür von rechts (clip-path), zeilenweise Mask-Reveals, beschreibende Unterzeilen ohne Nummern, Anriss unter dem aktiven Punkt; Schließen läuft rückwärts und schneller |
 | Header | Lese-Fortschritt als 2-px-Anrisslinie. Blendet der Header aus, bleibt die Linie am oberen Rand. Scrollwerte sind auf [0, max] begrenzt, damit der iOS-Overscroll nicht flackert |
 | Anfrage | Schritt gleitet aus der Laufrichtung herein, Fortschritt füllt sich, Haken zeichnet sich |
 
@@ -249,3 +253,13 @@ Sektionen, die mehrfach oder statisch vorkamen, bekommen je eine eigene, handwer
 
 - **Lineal (Prozess):** Die Füllung hängt jetzt an der gedämpften Timeline (Desktop) bzw. an `quickTo` (Mobil). Vorher lief sie dem gedämpften Scroll ruckelnd voraus.
 - **Typografie:** Die Nummerierung vor Überschriften ist entfernt. Überschriften haben Gewicht 480, H2/H3 sind größer, die Hero-Headline auf Desktop ist kleiner (max. 5,75 rem).
+
+
+## Dark Mode – Menüpalette für die gesamte Seite
+
+- Warmer dunkler Grund `#1c1916`, erhöhte Flächen `#262220`, cremeweißer Text `#f4f1ec`, gedämpfter Text `#b9b0a4`, Orange `#e46929`. Unveränderliche Materialfarben und semantische Seitenfarben sind getrennt; Fotos, Werkzeichnungen und orange Primärbuttons bleiben lesbar. Menü, Footer und bestehende dunkle Sektionen behalten ihre feste Palette in beiden Modi.
+- Toggle im Desktop-Header, mobilen Menü und Footer. Ohne Auswahl folgt die Seite der Systemeinstellung, die explizite Auswahl wird unter `lunnebach:color-mode` gespeichert. Der Head-Bootstrap setzt den Modus vor dem ersten Paint. Auch bei blockiertem localStorage funktioniert die Umschaltung; Systemwechsel und Änderungen in anderen Tabs werden synchronisiert.
+- Die Browserleistenfarbe wird über ein eigenes Theme-Color-Meta synchronisiert, damit Next beim Navigieren keine abweichende statische Farbe nachliefert. Die Farbwechsel verändern keine Geometrie und greifen nicht in GSAP-Animationen ein.
+- Menünummern und ihre Zählanimation entfernt; Beschreibungen und Reveal-Animation bleiben erhalten.
+- Sicherung vor Umsetzung: `/home/silas/lunnebach-backups/dark-mode-20261016-060256` (mit Prüfsummen und Wiederherstellungsanleitung).
+- Prüfung: Produktionsbuild, 22 Dark-Mode-Checks auf Desktop und Chromium-Mobil-Emulation bestanden (acht Seiten, Kontraste, Speicherung, Menü und Layout 320–1440 px). Die Hero-Regressionen bestanden ebenfalls. Safari und echte Mobilgeräte sind nicht geprüft.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useId, useRef } from "react";
 import { useMotion } from "@/lib/motion/useMotion";
 
 const P = "#f4f1ec";
@@ -17,51 +17,89 @@ const mono = { fontFamily: "var(--font-mono)" } as const;
  */
 export function HeroBlueprint() {
   const root = useRef<HTMLDivElement>(null);
+  const id = useId().replace(/:/g, "");
+  const gridId = `bp-grid-${id}`;
+  const hatchId = `bp-hatch-${id}`;
 
   useMotion(
-    ({ reduce, canHover, defer, gsap }) => {
+    ({ reduce, canHover, defer, gsap, ScrollTrigger }) => {
       const el = root.current;
       const host = el?.parentElement;
       if (!el || !host || reduce) return;
+      const mask = "radial-gradient(circle 1px at 50% 50%, #000, transparent)";
+      if (!CSS.supports("mask-image", mask) && !CSS.supports("-webkit-mask-image", mask)) return;
       const set = (k: string, v: string) => host.style.setProperty(k, v);
+      const reset = () => {
+        host.classList.remove("bp-host", "bp--lens", "bp--scan");
+        ["--mx", "--my", "--r", "--sy", "--bp-opacity"].forEach((key) => host.style.removeProperty(key));
+      };
 
       defer(() => {
         if (canHover) {
           host.classList.add("bp-host", "bp--lens");
-          const st = { x: 55, y: 35, r: 0 };
+          const st = { x: 68, y: 42, r: 0, angle: 0 };
           const render = () => {
             set("--mx", `${st.x.toFixed(2)}%`);
             set("--my", `${st.y.toFixed(2)}%`);
             set("--r", `${st.r.toFixed(1)}px`);
+            set("--bp-opacity", `${Math.min(1, st.r / 24).toFixed(3)}`);
           };
           render();
-          // Hinweis: Lupe kreist einmal über das Bild
+          // Ein vollständiger Umlauf als Hinweis, erst wenn das Foto im Viewport liegt.
           const intro = gsap
-            .timeline({ delay: 1.8, onUpdate: render })
-            .to(st, { r: 92, duration: 0.5, ease: "power3.out" })
-            .to(st, { x: 68, y: 26, duration: 0.8, ease: "power2.inOut" }, "<")
-            .to(st, { x: 38, y: 58, duration: 1, ease: "power2.inOut" })
-            .to(st, { r: 0, duration: 0.45, ease: "power2.in" });
+            .timeline({ paused: true, delay: 1.8 })
+            .to(st, { r: Math.min(92, host.clientWidth * 0.3), duration: 0.45, ease: "power3.out", onUpdate: render })
+            .to(st, {
+              angle: Math.PI * 2,
+              duration: 1.8,
+              ease: "none",
+              onUpdate: () => {
+                st.x = 52 + 16 * Math.cos(st.angle);
+                st.y = 42 + 18 * Math.sin(st.angle);
+                render();
+              },
+            }, "<")
+            .to(st, { r: 0, duration: 0.4, ease: "power2.in", onUpdate: render });
+          ScrollTrigger.create({ trigger: host, start: "top 85%", once: true, onEnter: () => { intro.play(); } });
           const toX = gsap.quickTo(st, "x", { duration: 0.45, ease: "power3.out", onUpdate: render });
           const toY = gsap.quickTo(st, "y", { duration: 0.45, ease: "power3.out", onUpdate: render });
+          // Vorab im Motion-Kontext erstellen: Auch schnelle Pointer-Wechsel werden beim Revert beendet.
+          const toRadius = gsap.quickTo(st, "r", { duration: 0.35, ease: "power3.out", onUpdate: render });
+          const position = (e: PointerEvent) => {
+            const bounds = host.getBoundingClientRect();
+            return {
+              x: gsap.utils.clamp(0, 100, ((e.clientX - bounds.left) / bounds.width) * 100),
+              y: gsap.utils.clamp(0, 100, ((e.clientY - bounds.top) / bounds.height) * 100),
+            };
+          };
           const onMove = (e: PointerEvent) => {
-            const r = host.getBoundingClientRect();
-            toX(((e.clientX - r.left) / r.width) * 100);
-            toY(((e.clientY - r.top) / r.height) * 100);
-          };
-          const onEnter = () => {
+            if (e.pointerType === "touch") return;
             intro.kill();
-            gsap.to(st, { r: 110, duration: 0.5, ease: "power3.out", onUpdate: render, overwrite: "auto" });
+            const point = position(e);
+            toX(point.x);
+            toY(point.y);
+            toRadius(Math.min(110, host.clientWidth * 0.35));
           };
-          const onLeave = () => gsap.to(st, { r: 0, duration: 0.4, ease: "power2.in", onUpdate: render, overwrite: "auto" });
+          const onEnter = (e: PointerEvent) => {
+            if (e.pointerType === "touch") return;
+            intro.kill();
+            toX.tween.pause();
+            toY.tween.pause();
+            Object.assign(st, position(e));
+            render();
+            toRadius(Math.min(110, host.clientWidth * 0.35));
+          };
+          const onLeave = () => { toRadius(0); };
           host.addEventListener("pointermove", onMove);
           host.addEventListener("pointerenter", onEnter);
           host.addEventListener("pointerleave", onLeave);
+          host.addEventListener("pointercancel", onLeave);
           return () => {
             host.removeEventListener("pointermove", onMove);
             host.removeEventListener("pointerenter", onEnter);
             host.removeEventListener("pointerleave", onLeave);
-            host.classList.remove("bp-host", "bp--lens");
+            host.removeEventListener("pointercancel", onLeave);
+            reset();
           };
         }
 
@@ -75,7 +113,7 @@ export function HeroBlueprint() {
           onUpdate: render,
           scrollTrigger: { trigger: host, start: "top 80%", end: "bottom 20%", scrub: 0.5 },
         });
-        return () => host.classList.remove("bp-host", "bp--scan");
+        return reset;
       });
     },
     { scope: root },
@@ -86,20 +124,20 @@ export function HeroBlueprint() {
       <div ref={root} aria-hidden className="bp">
         <svg viewBox="0 0 450 700" preserveAspectRatio="xMidYMid slice" focusable="false">
           <defs>
-            <pattern id="bp-grid" width="25" height="25" patternUnits="userSpaceOnUse">
+            <pattern id={gridId} width="25" height="25" patternUnits="userSpaceOnUse">
               <path d="M25 0H0V25" fill="none" stroke={P} strokeOpacity=".09" />
             </pattern>
-            <pattern id="bp-hatch" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+            <pattern id={hatchId} width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
               <path d="M0 0V7" stroke={P} strokeOpacity=".45" />
             </pattern>
           </defs>
-          <rect width="450" height="700" fill="url(#bp-grid)" />
+          <rect width="450" height="700" fill={`url(#${gridId})`} />
           <g fill="none" stroke={P} strokeWidth="1.3">
             {/* Nische + Seitenwände (geschnitten, schraffiert) */}
             <rect x="60" y="40" width="330" height="620" />
-            <rect x="60" y="40" width="30" height="580" fill="url(#bp-hatch)" />
-            <rect x="360" y="40" width="30" height="580" fill="url(#bp-hatch)" />
-            <rect x="60" y="620" width="330" height="40" fill="url(#bp-hatch)" />
+            <rect x="60" y="40" width="30" height="580" fill={`url(#${hatchId})`} />
+            <rect x="360" y="40" width="30" height="580" fill={`url(#${hatchId})`} />
+            <rect x="60" y="620" width="330" height="40" fill={`url(#${hatchId})`} />
             {/* Glasböden */}
             {[160, 280, 400, 520].map((y) => (
               <path key={y} d={`M90 ${y}H360M90 ${y + 5}H360`} strokeDasharray="7 4" />

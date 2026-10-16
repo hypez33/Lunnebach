@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Dimension } from "@/components/ui/Dimension";
 import { img } from "@/content/images";
 import { home } from "@/content/pages";
+import { HeroTeam } from "./HeroTeam";
 
 const panel = img("hero/moebelbau-vitrine"); // 450 × 700 – wird nie breiter als nativ dargestellt
 const detail = img("privat/wohnen/wohnzimmer-vitrine-detail");
@@ -17,9 +18,6 @@ export function Hero() {
       <HeroMotion className="container-site relative pb-[clamp(4rem,8vw,8rem)] pt-[clamp(2rem,4vw,3.5rem)]">
         <div className="flex items-center justify-between gap-6">
           <p className="eyebrow text-ink-muted">{h.eyebrow}</p>
-          <p className="eyebrow hidden text-ink-muted md:block" aria-hidden>
-            Blatt 01 · M 1:20
-          </p>
         </div>
 
         {/* Anrisslinie (Streichmaß) */}
@@ -50,6 +48,7 @@ export function Hero() {
                 {h.ctaSecondary.label}
               </ButtonLink>
             </div>
+            <HeroTeam />
           </div>
 
           <div className="relative col-span-4 md:col-span-6 md:col-start-2 lg:col-span-4 lg:col-start-9">

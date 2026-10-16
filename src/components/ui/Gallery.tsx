@@ -235,7 +235,7 @@ export function Gallery({ items, title }: { items: GalleryItem[]; title: string 
         isDismissable
         className="fixed inset-0 z-[70]"
       >
-        <div ref={backdrop} aria-hidden className="absolute inset-0 bg-ink/95" />
+        <div ref={backdrop} aria-hidden className="absolute inset-0 bg-[rgb(28_25_22/0.95)]" />
         <Modal className="fixed inset-0">
           <Dialog
             aria-labelledby="lightbox-title"

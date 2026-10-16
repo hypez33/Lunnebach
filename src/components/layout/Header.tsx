@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { mainNav, site } from "@/content/site";
 import { Logo } from "./Logo";
 import { MobileMenu } from "./MobileMenu";
+import { ThemeToggle } from "./ThemeToggle";
 
 /**
  * Header: blendet beim Runterscrollen aus, beim Hochscrollen ein (nie, solange der Fokus darin liegt).
@@ -80,9 +81,9 @@ export function Header() {
       className="site-header fixed inset-x-0 top-0 z-50 h-[var(--header-h)] transition-[transform,background-color,color,border-color] duration-500 ease-[var(--ease-lunnebach)] data-[hidden]:-translate-y-full"
     >
       <span ref={progress} aria-hidden className="read-progress pointer-events-none absolute inset-x-0 top-full h-[2px] origin-left bg-accent lg:hidden" />
-      <div className="container-site flex h-full items-center justify-between gap-6">
+      <div className="container-site flex h-full items-center justify-between gap-2 sm:gap-6">
         <Link href="/" className="-my-2 flex min-h-11 items-center py-2" aria-label="Lunnebach – zur Startseite">
-          <Logo className="h-8 sm:h-9" />
+          <Logo className="h-6 min-[360px]:h-8 sm:h-9" />
         </Link>
 
         <nav aria-label="Hauptnavigation" className="hidden lg:block">
@@ -94,7 +95,7 @@ export function Header() {
                   <Link
                     href={item.href}
                     aria-current={active ? "page" : undefined}
-                    className="nav-link group relative inline-flex min-h-11 items-center px-3 text-[0.9375rem] font-medium"
+                    className="nav-link group relative inline-flex min-h-11 items-center px-2 text-[0.9375rem] font-medium xl:px-3"
                   >
                     <span className="link-line pb-0.5 group-aria-[current=page]:bg-[length:100%_1.5px]">{item.label}</span>
                   </Link>
@@ -105,6 +106,7 @@ export function Header() {
         </nav>
 
         <div className="flex items-center gap-2">
+          <ThemeToggle compact className="hidden lg:inline-flex" />
           <Link href="/anfrage" className="btn btn-primary hidden !min-h-11 !px-4 !py-2 text-[0.9375rem] sm:inline-flex">
             <span className="btn-label">Projekt anfragen</span>
           </Link>

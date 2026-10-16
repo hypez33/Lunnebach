@@ -15,7 +15,7 @@ type Props = {
   scrollDimension?: boolean;
   headingLevel?: "h2" | "h3";
   preload?: boolean;
-  /** clip-path-Reveal beim Scrollen (aus bei gefilterten Rastern) */
+  /** clip-path-Reveal beim Scrollen */
   reveal?: boolean;
 };
 

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { img } from "@/content/images";
 import { legalNav, mainNav, site } from "@/content/site";
 import { MotionToggle } from "./MotionToggle";
+import { ThemeToggle } from "./ThemeToggle";
 
 const signet = img("brand/rolf-lunnebach-weiss");
 
@@ -95,7 +96,8 @@ export function Footer() {
               </li>
             </ul>
           </nav>
-          <div className="col-span-4 md:col-span-8 lg:col-span-6 lg:justify-self-end">
+          <div className="col-span-4 flex flex-wrap gap-x-6 gap-y-3 md:col-span-8 lg:col-span-6 lg:justify-self-end">
+            <ThemeToggle />
             <MotionToggle tone="dark" />
           </div>
         </div>

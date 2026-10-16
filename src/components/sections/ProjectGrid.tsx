@@ -152,7 +152,6 @@ export function ProjectGrid({ projects }: { projects: Project[] }) {
                 project={project}
                 sizes={slot.sizes}
                 aspect={PATTERN[index % PATTERN.length].aspect}
-                reveal={false}
                 headingLevel="h2"
                 preload={pos === 0}
               />
