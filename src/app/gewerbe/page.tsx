@@ -6,6 +6,7 @@ import { WorldProjects } from "@/components/sections/WorldProjects";
 import { AnchorNav } from "@/components/ui/AnchorNav";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { PageHeader } from "@/components/ui/PageHeader";
+import { TradeSchedule } from "@/components/ui/TradeSchedule";
 import { gewerbeServices } from "@/content/services";
 
 export const metadata: Metadata = {
@@ -47,13 +48,12 @@ export default function GewerbePage() {
           <p className="mt-8 max-w-[56ch] text-lead text-paper-muted lg:ml-[calc(25%+0.5rem)]">
             Elektro, Maler und weitere Gewerke koordinieren wir mit – Sie haben einen Ansprechpartner.
           </p>
+          {/* Bauzeitenplan: „Heute“-Linie läuft beim Scrollen durch die Wochen, mit Maus ziehbar */}
+          <TradeSchedule className="mt-[clamp(3rem,6vw,5rem)]" />
           <ol className="mt-[clamp(3rem,6vw,5rem)] grid gap-px bg-line-dark md:grid-cols-3">
             {trades.map((t) => (
               <li key={t.n} className="bg-ink p-[clamp(1.5rem,2.5vw,2.5rem)]">
-                <p className="mono text-[0.8125rem] text-accent" aria-hidden>
-                  {t.n} —
-                </p>
-                <h3 className="mt-8 text-h3">{t.title}</h3>
+                <h3 className="text-h3">{t.title}</h3>
                 <p className="mt-3 text-paper-muted">{t.text}</p>
               </li>
             ))}

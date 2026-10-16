@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { DURATION, EASE, MOBILE, STAGGER, START } from "@/lib/motion/eases";
 import { useMotion } from "@/lib/motion/useMotion";
+import { countLabel, restoreLabels } from "@/lib/motion/countLabel";
 
 /**
  * Moment 1 – Hero „Anriss“.
@@ -45,6 +46,10 @@ export function HeroMotion({ children, className = "" }: { children: React.React
               { autoAlpha: 1, x: 0, y: 0, duration: 0.4 * speed, ease: EASE.out },
               at + 0.45 * speed,
             );
+          d.querySelectorAll(".dim-label").forEach((label) => {
+            const count = countLabel(gsap, label, 0.7 * speed);
+            if (count) tl.add(count, at + 0.45 * speed);
+          });
         });
       };
 
@@ -67,7 +72,7 @@ export function HeroMotion({ children, className = "" }: { children: React.React
           tl.from(fades, { y: 18, autoAlpha: 0, duration: 0.8, stagger: 0.08, ease: EASE.out }, 0.55);
         }
         drawDims(tl, 0.85);
-        return;
+        return () => restoreLabels(root);
       }
 
       // ---- Mobil: Hochformat-Choreografie --------------------------------------------------
@@ -107,6 +112,7 @@ export function HeroMotion({ children, className = "" }: { children: React.React
           },
         });
       }
+      return () => restoreLabels(root);
     },
     { scope },
   );

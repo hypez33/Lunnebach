@@ -3,6 +3,7 @@
 import { useRef } from "react";
 import { ACTIVE_ZONE, DURATION, EASE, MOBILE, STAGGER, START } from "@/lib/motion/eases";
 import { isInitiallyVisible, useMotion } from "@/lib/motion/useMotion";
+import { countLabel, restoreLabels } from "@/lib/motion/countLabel";
 
 const CLIP_FROM: Record<string, string> = {
   up: "inset(100% 0% 0% 0%)",
@@ -19,7 +20,7 @@ const nf = (decimals: number) => new Intl.NumberFormat("de-DE", { minimumFractio
  * Server Components markieren Elemente per data-Attribut, diese Komponente verdrahtet sie:
  *  - [data-split]           Headline zeilenweise (SplitText, mask: lines); "hero" = Seiten-H1 beim Laden
  *  - [data-clip]            Bild-Reveal per clip-path (up | down | left | door); mit [data-clip-batch] gestaffelt
- *  - [data-dimension]       Maßkette zeichnet sich (DrawSVG)
+ *  - [data-dimension]       Maßkette zeichnet sich (DrawSVG), die Zahl im Label zählt mit
  *  - [data-count]           Zahl zählt einmalig hoch
  *  - [data-active-in-view]  Touch: Klasse .is-active, solange das Element in der Bildmitte steht
  *                           (Gegenstück zu :hover; Hover-Maßketten der Projektkarten zeichnen sich dabei)
@@ -130,12 +131,17 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
             { scale: 1, duration: 0.35, stagger: 0.05, ease: "back.out(2)" },
             "-=0.35",
           )
+          // Label erscheint früh und zählt mit, während sich die Linie zeichnet
           .fromTo(
             el.querySelectorAll(".dim-label"),
             { autoAlpha: 0, [vertical ? "x" : "y"]: 8 },
-            { autoAlpha: 1, x: 0, y: 0, duration: 0.5, ease: EASE.out },
-            "-=0.3",
+            { autoAlpha: 1, x: 0, y: 0, duration: 0.45, ease: EASE.out },
+            0.12,
           );
+        el.querySelectorAll(".dim-label").forEach((label) => {
+          const count = countLabel(gsap, label, DURATION.dimension);
+          if (count) tl.add(count, 0.12);
+        });
         return tl;
       };
       defer(() =>
@@ -235,7 +241,10 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
       defer(() => {
         ScrollTrigger.sort();
         const raf = requestAnimationFrame(() => ScrollTrigger.refresh());
-        return () => cancelAnimationFrame(raf);
+        return () => {
+          cancelAnimationFrame(raf);
+          restoreLabels(root);
+        };
       });
     },
     { scope },

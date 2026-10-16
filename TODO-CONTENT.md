@@ -31,6 +31,7 @@ Alle übrigen Stellen tragen plausible, im Code als **Beispiel** markierte Formu
 | Teamnamen – Namen werden bei `placeholder: true` **nicht angezeigt**, nur Rollen; „Team Planung“ ist ein Beispiel | `src/content/team.ts` | Namen/Rollen + **Einwilligung der abgebildeten Personen**, dann `placeholder: false` |
 | Ausbildungsstart „jedes Jahr zum 1. August“ (Beispiel) | `src/app/karriere/page.tsx` | prüfen |
 | Maschinenpark – Beschreibungen „5-Achs-Bearbeitung“, „Zuschnitt“, „Kante & Fuge“ sind **Beispiele**, Modelle/Fotos/Maße fehlen | `src/app/werkstatt/page.tsx` | Fotos folgen, Angaben prüfen |
+| Bauzeitenplan „Alles aus einer Hand“ (6 Gewerke, 11 Wochen) und Maße am Werkstück (1 300 × 1 600) | `src/components/ui/TradeSchedule.tsx`, `BuildPiece.tsx` | **illustrativ** (als „Beispiel“ beschriftet) – mit einem echten Projektablauf abgleichen |
 | Videoinhalt „Einblick in die Werkstatt“ (YouTube `RBPyLdsKxfs`) | `Workshop.tsx`, `werkstatt/page.tsx` | Titel/Inhalt des Videos bestätigen, Untertitel ergänzen |
 | Impressum: Kammer, Handwerksrolle, USt-IdNr., Bildnachweis | `src/app/impressum/page.tsx` | **rechtlich prüfen** |
 | Datenschutzerklärung (Hoster, Speicherdauer, Übertragungsweg) | `src/app/datenschutz/page.tsx` | Muster – **rechtlich prüfen** |

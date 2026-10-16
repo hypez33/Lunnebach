@@ -23,19 +23,13 @@ export function ServiceSection({ service, index }: { service: Service; index: nu
   const secondary = rest.slice(0, 3);
   const flip = index % 2 === 1;
   const related = projects.find((p) => p.slug === RELATED[service.id]);
-  const n = String(index + 1).padStart(2, "0");
 
   return (
     <section id={service.id} aria-labelledby={`${service.id}-title`} className="section-y scroll-mt-[var(--header-h)] border-t border-line">
       <div className="container-site grid-12 gap-y-12">
         <div className={`col-span-4 md:col-span-8 lg:col-span-4 ${flip ? "lg:order-2 lg:col-start-9" : ""}`}>
           <div className="lg:sticky lg:top-[calc(var(--header-h)+2rem)]">
-            <p className="mono flex items-center justify-between text-[0.8125rem] text-ink-muted">
-              <span>
-                <span className="text-accent-text">{n}</span> <span aria-hidden>—</span> {service.short}
-              </span>
-              <span aria-hidden>Pos. {n}</span>
-            </p>
+            <p className="eyebrow text-ink-muted">{service.short}</p>
             <h2 id={`${service.id}-title`} data-split className="mt-6 text-h2">
               {service.title}
             </h2>

@@ -6,6 +6,7 @@ import { InquiryCta } from "@/components/sections/InquiryCta";
 import { Values } from "@/components/sections/Values";
 import { Dimension } from "@/components/ui/Dimension";
 import { Eyebrow } from "@/components/ui/Eyebrow";
+import { BuildPiece } from "@/components/ui/BuildPiece";
 import { Figure } from "@/components/ui/Figure";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { Stat } from "@/components/ui/Stat";
@@ -97,7 +98,9 @@ export default function WerkstattPage() {
               Vom ersten Strich bis zur letzten Schraube.
             </h2>
           </div>
-          <ol className="mt-[clamp(3rem,6vw,5rem)] grid border-t border-ink md:grid-cols-5">
+          {/* Werkstück entsteht beim Scrollen; der passende Schritt darunter tritt hervor */}
+          <BuildPiece listSelector="#werkstatt-steps" />
+          <ol id="werkstatt-steps" className="mt-[clamp(2.5rem,5vw,4rem)] grid border-t border-ink md:grid-cols-5">
             {processSteps.map((s) => (
               <li key={s.number} className="border-b border-line py-6 md:border-b-0 md:border-r md:px-5 md:first:pl-0 md:last:border-r-0">
                 <p aria-hidden className="font-display text-[3.5rem] leading-none text-accent [font-variation-settings:'opsz'_144]">

@@ -1351,3 +1351,206 @@ html[data-menu-open] .site-header {
 .cabinet-leaf--b .cabinet-tag {
   right: 0.875rem;
 }
+
+/* ------------------------------------------------------------------
+   Gewerbe: Bauzeitenplan „Alles aus einer Hand“
+   ------------------------------------------------------------------ */
+.schedule {
+  --label-w: 0px;
+  border-top: 1px solid var(--color-line-dark);
+  padding-top: 1.25rem;
+}
+@media (min-width: 768px) {
+  .schedule {
+    --label-w: 13rem;
+  }
+}
+.schedule-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.5rem;
+}
+.schedule-readout {
+  display: flex;
+  gap: 0.875rem;
+  font-size: 0.8125rem;
+  color: var(--color-paper);
+  font-variant-numeric: tabular-nums;
+}
+.schedule-week {
+  color: var(--color-accent);
+}
+.schedule-grid {
+  margin-top: 1.5rem;
+}
+.schedule-weeks {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  margin-left: var(--label-w);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-line-dark);
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--color-paper-muted);
+  font-variant-numeric: tabular-nums;
+}
+.schedule-weeks span:nth-child(even) {
+  visibility: hidden;
+}
+@media (min-width: 768px) {
+  .schedule-weeks span:nth-child(even) {
+    visibility: visible;
+  }
+}
+.schedule-lanes {
+  position: relative;
+  /* Wochenraster im Hintergrund */
+  background-image: linear-gradient(to right, var(--color-line-dark) 1px, transparent 1px);
+  background-size: calc((100% - var(--label-w)) / 11) 100%;
+  background-position: var(--label-w) 0;
+}
+.schedule-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.375rem;
+  padding-block: 0.625rem;
+  border-bottom: 1px solid var(--color-line-dark);
+}
+@media (min-width: 768px) {
+  .schedule-row {
+    grid-template-columns: var(--label-w) 1fr;
+    align-items: center;
+    gap: 0;
+  }
+}
+.schedule-label {
+  display: flex;
+  align-items: baseline;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  color: var(--color-paper-muted);
+  transition: color 0.35s var(--ease-lunnebach);
+}
+.schedule-who {
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.8;
+}
+.schedule-track {
+  position: relative;
+  height: 0.875rem;
+}
+.schedule-bar {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 1px;
+  background: var(--color-accent);
+}
+.is-partner .schedule-bar {
+  background: repeating-linear-gradient(135deg, rgb(244 241 236 / 0.5) 0 2px, transparent 2px 6px);
+  box-shadow: inset 0 0 0 1.5px var(--color-paper-muted);
+}
+.schedule-contact .schedule-bar {
+  top: 35%;
+  bottom: 35%;
+  background: var(--color-paper);
+}
+.schedule-contact .schedule-label {
+  color: var(--color-paper);
+}
+.schedule-cursor {
+  display: none;
+  position: absolute;
+  top: -0.25rem;
+  bottom: 0;
+  left: var(--label-w);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--color-accent);
+  pointer-events: none;
+}
+.schedule-cursor::before {
+  content: "";
+  position: absolute;
+  top: -0.375rem;
+  left: -4px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-accent);
+}
+.schedule--live .schedule-cursor {
+  display: block;
+}
+.schedule--live .schedule-row.is-active .schedule-label {
+  color: var(--color-paper);
+}
+@media (hover: hover) and (pointer: fine) {
+  .schedule--live .schedule-lanes {
+    cursor: ew-resize;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Werkstatt: Werkstück entsteht (BuildPiece)
+   ------------------------------------------------------------------ */
+.build {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: clamp(2.5rem, 5vw, 4rem);
+}
+.build-svg {
+  width: min(100%, 22rem);
+  height: auto;
+  overflow: visible;
+}
+.build-stage {
+  margin-top: 0.75rem;
+  font-size: 0.8125rem;
+  color: var(--color-ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+/* Mobil bleibt das Werkstück stehen, die Schritte laufen darunter durch */
+@media (max-width: 767px) {
+  .build--live {
+    position: sticky;
+    top: calc(var(--header-h) + 0.5rem);
+    z-index: 1;
+    padding-block: 0.5rem 0.75rem;
+    background: var(--color-paper);
+    border-bottom: 1px solid var(--color-line);
+  }
+  .build--live .build-svg {
+    width: min(58%, 12rem);
+  }
+}
+.build--live ~ ol > li {
+  transition: box-shadow 0.4s var(--ease-lunnebach);
+}
+.build--live ~ ol > li.is-current {
+  box-shadow: inset 0 3px 0 var(--color-accent);
+}
+
+/* ------------------------------------------------------------------
+   Karriere: Stellen klappen weich auf (progressiv, wo ::details-content unterstützt wird)
+   ------------------------------------------------------------------ */
+@supports (interpolate-size: allow-keywords) {
+  .job {
+    interpolate-size: allow-keywords;
+  }
+  .job::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height 0.55s var(--ease-lunnebach),
+      content-visibility 0.55s allow-discrete;
+  }
+  .job[open]::details-content {
+    height: auto;
+  }
+}
