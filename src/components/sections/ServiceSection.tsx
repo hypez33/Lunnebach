@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ButtonLink } from "@/components/ui/ButtonLink";
 import { Dimension } from "@/components/ui/Dimension";
 import { Figure } from "@/components/ui/Figure";
+import { ToolDetail } from "@/components/ui/ToolDetail";
 import { img } from "@/content/images";
 import { projects } from "@/content/projects";
 import type { Service } from "@/content/types";
@@ -69,6 +70,8 @@ export function ServiceSection({ service, index }: { service: Service; index: nu
               <Figure image={main} sizes="(min-width: 1024px) 800px, 100vw" reveal={flip ? "door" : "left"} />
             </div>
           )}
+          {/* Eigenes Werkzeug-Detail je Bereich – baut sich beim Scrollen auf */}
+          <ToolDetail id={service.id} className={`relative z-10 mt-6 lg:-mt-24 ${flip ? "lg:mr-auto lg:-ml-6" : "lg:ml-auto lg:-mr-6"}`} />
           {secondary.length > 0 && (
             <ul className="mt-6 grid grid-cols-2 items-start gap-4 md:grid-cols-3">
               {secondary.map((im, i) => (

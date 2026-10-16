@@ -98,19 +98,23 @@ export default function WerkstattPage() {
               Vom ersten Strich bis zur letzten Schraube.
             </h2>
           </div>
-          {/* Werkstück entsteht beim Scrollen; der passende Schritt darunter tritt hervor */}
-          <BuildPiece listSelector="#werkstatt-steps" />
-          <ol id="werkstatt-steps" className="mt-[clamp(2.5rem,5vw,4rem)] grid border-t border-ink md:grid-cols-5">
-            {processSteps.map((s) => (
-              <li key={s.number} className="border-b border-line py-6 md:border-b-0 md:border-r md:px-5 md:first:pl-0 md:last:border-r-0">
-                <p aria-hidden className="font-display text-[3.5rem] leading-none text-accent [font-variation-settings:'opsz'_144]">
-                  {s.number}
-                </p>
-                <h3 className="mt-5 text-[1.375rem] leading-tight">{s.title}</h3>
-                <p className="mt-3 text-[0.9375rem] text-ink-muted">{s.text}</p>
-              </li>
-            ))}
-          </ol>
+          {/* Werkstück entsteht beim Scrollen (bleibt stehen), der passende Schritt rechts tritt hervor */}
+          <div className="grid-12 mt-[clamp(2.5rem,5vw,4rem)] gap-y-6">
+            <BuildPiece listSelector="#werkstatt-steps" className="col-span-4 md:col-span-8 lg:col-span-5" />
+            <ol id="werkstatt-steps" className="build-steps col-span-4 border-t border-ink md:col-span-8 lg:col-span-6 lg:col-start-7">
+              {processSteps.map((s) => (
+                <li key={s.number}>
+                  <p aria-hidden className="build-step-no font-display text-accent-text [font-variation-settings:'opsz'_144]">
+                    {s.number}
+                  </p>
+                  <div>
+                    <h3 className="build-step-title">{s.title}</h3>
+                    <p className="mt-2 max-w-[46ch] text-ink-muted">{s.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
         </div>
       </section>
 

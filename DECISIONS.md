@@ -224,3 +224,24 @@ Die Werte streuen auf dieser Maschine stark. TBT schwankte bei identischem Build
 - Playwright-Projekte `iphone-13`, `iphone-se` (3rd gen, 375 × 667) und `pixel-7` führen `tests/mobile-motion.spec.ts` aus: Rundgang mit echten Wheel- und Touch-Events (CDP), Video unter `qa/videos/`. **Die iPhones laufen in Chromium mit Geräte-Emulation**, denn WebKit ist zwar installiert, braucht unter WSL aber Systembibliotheken (libgtk-4, libgraphene, libxslt, libevent), deren Installation sudo erfordert. Safari-spezifisches Verhalten (View Transitions, Overscroll, `:active`) ist damit **nicht** auf echtem WebKit geprüft.
 - Letzter vollständiger Lauf: 176 bestanden, 2 fehlgeschlagen. Beide Fehler kamen aus dem neuen Reduced-Motion-Test, der die gestaltete Rahmung der „Zwei Welten“ (`inset(4%)`, Ruhezustand) als Clip wertete. Der Selektor ist korrigiert, **der korrigierte Test wurde nicht erneut ausgeführt.** Alle axe-Tests (Desktop + Mobil, mit und ohne reduzierte Bewegung) und die drei Geräte-Rundgänge waren grün.
 - Desktop-Screenshots vorher liegen vor. Ein systematischer Vorher/Nachher-Vergleich wurde nicht mehr durchgeführt. Die Desktop-Pfade (Hover, Horizontal-Strecke, Hero) sind im Code unverändert, nur in `@media (hover: hover)` gekapselt.
+
+---
+
+## Runde 3 – Interaktive Sektionen statt Wiederholung
+
+Sektionen, die mehrfach oder statisch vorkamen, bekommen je eine eigene, handwerkliche Interaktion. Alle Effekte sind dekorativ (`aria-hidden`), der Inhalt steht weiterhin als Text daneben. Ohne JS bzw. bei reduzierter Bewegung zeigen sie den Endzustand, animiert werden nur `transform`, `opacity`, `clip-path` und SVG-Attribute. Sie starten per `defer()` in eigenen Tasks.
+
+| Sektion | Interaktion | Datei |
+|---|---|---|
+| Haltung (Start, Werkstatt) | Wasserwaage reagiert auf Scroll-Tempo und Maus, Anschlag gleitet zum aktiven Wert | `sections/Values.tsx` |
+| Anfrage & Anfahrt (6 Seiten) | Maßband zieht sich heraus, mit Maus „Maß nehmen“ | `ui/TapeMeasure.tsx` |
+| Cabinet (Start, Werkstatt) | Schiebetürflügel gleiten an den Scroll gekoppelt auf | `ui/CabinetDoors.tsx` |
+| Headlines | Bleistift-Anriss unter einem Schlüsselwort | `ui/Marked.tsx` |
+| Gewerbe „Alles aus einer Hand.“ | Bauzeitenplan mit „Heute“-Linie (Scroll, mit Maus ziehbar), durchgehender Ansprechpartner | `ui/TradeSchedule.tsx` |
+| Werkstatt „Vom ersten Strich …“ | Schrank entsteht in 5 Stufen. Das Werkstück bleibt stehen (sticky), der Trigger hängt an der Schrittliste, damit die Animation endet, solange alles sichtbar ist. Vorher hing er an der Sektion und lief aus dem Viewport | `ui/BuildPiece.tsx` |
+| Leistungsbereiche (9×) | eigenes Detailblatt je Bereich: Hochklappen, Bücherwand, Dachschräge (23°), Waschtisch, Dielen, Regalwand, Apothekerauszug, Konferenztisch, Lamellen | `ui/ToolDetail.tsx` |
+| Karriere „Keine Serie …“ | 6 identische Rohlinge morphen zu Stuhl, Tisch, Hocker, Kommode, Bank, Schrank. MorphSVG wird nur hier nachgeladen | `ui/UniqueRow.tsx` |
+| Maßketten überall | Zahl zählt mit, während sich die Linie zeichnet | `lib/motion/countLabel.ts` |
+
+- **Lineal (Prozess):** Die Füllung hängt jetzt an der gedämpften Timeline (Desktop) bzw. an `quickTo` (Mobil). Vorher lief sie dem gedämpften Scroll ruckelnd voraus.
+- **Typografie:** Die Nummerierung vor Überschriften ist entfernt. Überschriften haben Gewicht 480, H2/H3 sind größer, die Hero-Headline auf Desktop ist kleiner (max. 5,75 rem).

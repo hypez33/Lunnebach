@@ -4,6 +4,7 @@ import { PageMotion } from "@/components/motion/PageMotion";
 import { ApplicationSection } from "@/components/sections/ApplicationSection";
 import { Eyebrow } from "@/components/ui/Eyebrow";
 import { Figure } from "@/components/ui/Figure";
+import { UniqueRow } from "@/components/ui/UniqueRow";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { img } from "@/content/images";
 import { benefits, jobs } from "@/content/jobs";
@@ -60,6 +61,8 @@ export default function KarrierePage() {
             <Figure image={img("team/team5")} sizes="(min-width: 1024px) 320px, 50vw" reveal="up" className="mt-20" />
             <Figure image={img("team/lunnebach-team2")} sizes="(min-width: 1024px) 600px, 100vw" reveal="left" className="col-span-2" />
           </div>
+          {/* Keine Serie: identische Rohlinge werden beim Scrollen zu sechs verschiedenen Möbeln */}
+          <UniqueRow className="col-span-4 mt-[clamp(1rem,4vw,4rem)] md:col-span-8 lg:col-span-12" />
         </div>
       </section>
 
