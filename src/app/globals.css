@@ -1745,3 +1745,73 @@ html[data-menu-open] .site-header {
     font-size: 0.75rem;
   }
 }
+
+/* ------------------------------------------------------------------
+   Hero: Röntgenblick auf die Werkzeichnung (HeroBlueprint)
+   Variablen am Bildrahmen: --mx/--my/--r (Lupe), --sy (Scanlinie)
+   ------------------------------------------------------------------ */
+.bp,
+.bp-ring,
+.bp-scanline,
+.bp-hint {
+  display: none;
+}
+.bp {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background: var(--color-ink);
+}
+.bp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.bp-host .bp {
+  display: block;
+}
+.bp--lens .bp {
+  -webkit-mask-image: radial-gradient(circle var(--r, 0px) at var(--mx, 50%) var(--my, 40%), #000 97%, transparent 100%);
+  mask-image: radial-gradient(circle var(--r, 0px) at var(--mx, 50%) var(--my, 40%), #000 97%, transparent 100%);
+}
+.bp--lens .bp-ring {
+  display: block;
+  position: absolute;
+  z-index: 3;
+  left: var(--mx, 50%);
+  top: var(--my, 40%);
+  width: calc(var(--r, 0px) * 2);
+  height: calc(var(--r, 0px) * 2);
+  translate: -50% -50%;
+  border: 2px solid var(--color-accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 6px rgb(228 105 41 / 0.18);
+  pointer-events: none;
+}
+.bp--lens {
+  cursor: zoom-in;
+}
+.bp--scan .bp {
+  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+  mask-image: linear-gradient(to bottom, transparent calc(var(--sy, -15%) - 18%), #000 calc(var(--sy, -15%) - 12%), #000 var(--sy, -15%), transparent calc(var(--sy, -15%) + 0.5%));
+}
+.bp--scan .bp-scanline {
+  display: block;
+  position: absolute;
+  z-index: 3;
+  left: 0;
+  right: 0;
+  top: var(--sy, -15%);
+  height: 2px;
+  background: var(--color-accent);
+  box-shadow: 0 0 12px 2px rgb(228 105 41 / 0.6);
+  pointer-events: none;
+}
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .js:not([data-motion="reduced"]) .bp-hint {
+    display: block;
+    margin-top: 0.25rem;
+    color: var(--color-accent-text);
+  }
+}
