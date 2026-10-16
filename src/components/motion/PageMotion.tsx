@@ -147,7 +147,11 @@ export function PageMotion({ children }: { children: React.ReactNode }) {
       defer(() =>
         root.querySelectorAll<HTMLElement>("[data-dimension]").forEach((el) => {
           if (el.dataset.dimension === "static") return;
-          drawDimension(el, { scrollTrigger: { trigger: el, start: START.dimension, once: true } });
+          // Erst vollständig aufbauen, dann anbinden: Beim Erzeugen einer Timeline verschiebt GSAP
+          // den ersten Refresh. Mobile Touch-Trigger könnten sonst noch unfertige Einmal-Trigger
+          // rekursiv refreshen, die sich bei wiederhergestellter Scrollposition bereits entfernen.
+          const animation = drawDimension(el, { paused: true });
+          ScrollTrigger.create({ trigger: el, start: START.dimension, once: true, animation }).refresh();
         }),
       );
 
