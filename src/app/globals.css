@@ -270,23 +270,26 @@
 }
 
 /* Tap-Feedback: kurzer Press-State (120 ms). Das Element braucht `scale` in seiner transition-property.
-   Reduzierte Bewegung: statt Skalierung nur kurz heller. */
-@utility press {
-  &:active,
-  &[data-pressed] {
-    scale: var(--press-scale, 0.98);
-  }
-  @media (prefers-reduced-motion: reduce) {
+   Reduzierte Bewegung: statt Skalierung nur kurz heller.
+   Normale Klasse, damit Pseudoelement-Varianten keine ungültigen [data-pressed]-Selektoren erzeugen. */
+@layer utilities {
+  .press {
     &:active,
     &[data-pressed] {
+      scale: var(--press-scale, 0.98);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      &:active,
+      &[data-pressed] {
+        scale: none;
+        opacity: 0.82;
+      }
+    }
+    [data-motion="reduced"] &:active,
+    [data-motion="reduced"] &[data-pressed] {
       scale: none;
       opacity: 0.82;
     }
-  }
-  [data-motion="reduced"] &:active,
-  [data-motion="reduced"] &[data-pressed] {
-    scale: none;
-    opacity: 0.82;
   }
 }
 
